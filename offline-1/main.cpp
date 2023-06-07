@@ -1,5 +1,7 @@
 #include <iostream>
 #include "HammingBoard.hpp"
+#include "ManhattanBoard.hpp"
+#include "AStarSearch.hpp"
 
 int main()
 {
@@ -7,21 +9,41 @@ int main()
 
     std::cin >> k;
 
-    uint64_t **boardArray = new uint64_t *[k];
+    std::vector<std::vector<uint64_t>> boardArray(k, std::vector<uint64_t>(k));
 
     for(size_t i = 0; i < k; ++i)
     {
-        boardArray[i] = new uint64_t[k];
-
         for(size_t j = 0; j < k; ++j)
         {
             std::cin >> boardArray[i][j];
         }
     }
 
-    HammingBoard *hammingBoard = new HammingBoard(0, k, boardArray, nullptr);
+    Board *board = new HammingBoard(0, k, boardArray, nullptr);
+    AStarSearch *aStarSearch = new AStarSearch(board);
 
-    std::cout << hammingBoard->IsSolvable() << std::endl << std::endl;
+    aStarSearch->ExecuteSearch();
+
+    size_t moveCount = aStarSearch->GetMoveCount();
+
+    std::cout << std::endl << "Minimum number of moves = " << moveCount << std::endl;
+
+    std::vector<Board *> solvePath = aStarSearch->GetSolve();
+
+    for(size_t i = 0; i < solvePath.size(); ++i)
+    {
+        for(size_t p = 0; p < board->GetDimension(); ++p)
+        {
+            for(size_t q = 0; q < board->GetDimension(); ++q)
+            {
+                std::cout << solvePath[i]->GetCellValue(p, q) << " ";
+            }
+
+            std::cout << std::endl;
+        }
+
+        std::cout << std::endl;
+    }
 
     return 0;
 }

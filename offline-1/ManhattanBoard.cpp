@@ -1,5 +1,10 @@
 #include "ManhattanBoard.hpp"
 
+ManhattanBoard::ManhattanBoard(const size_t &depth, const size_t &dimension, const std::vector<std::vector<uint64_t>> &boardArray, Board *parent) : Board(depth, dimension, boardArray, parent)
+{
+    
+}
+
 uint64_t ManhattanBoard::GetPriority() const
 {
     size_t depth = GetDepth();
@@ -42,4 +47,14 @@ uint64_t ManhattanBoard::GetPriority() const
     }
 
     return result + depth;
+}
+
+Board *ManhattanBoard::CreateNewChildBoard(const Direction &direction) const
+{
+    if(!CanShiftBoard(direction))
+    {
+        return nullptr;
+    }
+
+    return new ManhattanBoard(GetDepth() + 1, GetDimension(), GetShiftedBoardArray(direction), (Board *)this);
 }

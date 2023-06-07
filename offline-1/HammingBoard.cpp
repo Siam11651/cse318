@@ -1,6 +1,6 @@
 #include "HammingBoard.hpp"
 
-HammingBoard::HammingBoard(const size_t &depth, const size_t &dimension, uint64_t **boardArray, Board *parent) : Board(depth, dimension, boardArray, parent)
+HammingBoard::HammingBoard(const size_t &depth, const size_t &dimension, const std::vector<std::vector<uint64_t>> &boardArray, Board *parent) : Board(depth, dimension, boardArray, parent)
 {
     
 }
@@ -25,4 +25,14 @@ uint64_t HammingBoard::GetPriority() const
     }
 
     return count + depth;
+}
+
+Board *HammingBoard::CreateNewChildBoard(const Direction &direction) const
+{
+    if(!CanShiftBoard(direction))
+    {
+        return nullptr;
+    }
+
+    return new HammingBoard(GetDepth() + 1, GetDimension(), GetShiftedBoardArray(direction), (Board *)this);
 }
