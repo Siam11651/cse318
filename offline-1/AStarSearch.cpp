@@ -1,3 +1,4 @@
+#include <iostream>
 #include "AStarSearch.hpp"
 
 void AStarSearch::BuildSolution()
@@ -46,6 +47,8 @@ void AStarSearch::ExecuteSearch()
 
     openList.push(currentBoard);
 
+    size_t count = 0;
+
     while(!openList.empty())
     {
         Board *parentBoard = openList.top();
@@ -59,6 +62,10 @@ void AStarSearch::ExecuteSearch()
 
             break;
         }
+
+        ++count;
+
+        std::cout << count << std::endl;
 
         Board *children[] =
         {
