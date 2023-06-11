@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ostream>
 #include <cstddef>
 #include <cstdint>
 #include <algorithm>
@@ -25,8 +26,8 @@ protected:
 public:
     Board(const size_t &depth, const size_t &dimension, const std::vector<std::vector<uint64_t>> &boardArray, Board *parent);
     Board(const Board &other);
-    virtual uint64_t GetPriority() const = 0;
-    virtual Board *CreateNewChildBoard(const Direction &direction) const = 0;
+    virtual uint64_t GetPriority() const;
+    virtual Board *CreateNewChildBoard(const Direction &direction) const;
     size_t GetBlankX() const;
     size_t GetBlankY() const;
     size_t GetDimension() const;
@@ -34,6 +35,8 @@ public:
     Board *GetParent() const;
     bool IsSolvable() const;
     bool IsSolved() const;
-    bool operator == (const Board &other);
+    void Print(std::ostream &outputStream) const;
+    bool operator == (const Board &other) const;
+    bool operator < (const Board &other) const;
     ~Board();
 };

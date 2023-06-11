@@ -1,6 +1,7 @@
 #pragma once
 
 #include <queue>
+#include <set>
 #include "Board.hpp"
 #include "BoardComparator.hpp"
 
@@ -9,7 +10,8 @@ class AStarSearch
 private:
     Board *currentBoard;
     std::vector<Board *> solvePath;
-    std::vector<Board *> closedList;
+    std::set<Board> closedList;
+    Board *finalBoard;
     bool solved;
 
     void BuildSolution();

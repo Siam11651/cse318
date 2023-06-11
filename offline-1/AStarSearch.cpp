@@ -3,11 +3,13 @@
 
 void AStarSearch::BuildSolution()
 {
-    while(currentBoard)
-    {
-        solvePath.push_back(currentBoard);
+    Board *now = finalBoard;
 
-        currentBoard = currentBoard->GetParent();
+    while(now)
+    {
+        solvePath.push_back(now);
+
+        now = now->GetParent();
     }
 
     std::reverse(solvePath.begin(), solvePath.end());
@@ -15,25 +17,21 @@ void AStarSearch::BuildSolution()
 
 bool AStarSearch::InClosedList(Board *board)
 {
-    bool inClosedList = false;
-
-    for(size_t i = 0; i < closedList.size(); ++i)
+    if(closedList.find(*board) == closedList.end())
     {
-        if(*board == *closedList[i])
-        {
-            inClosedList = true;
-
-            break;
-        }
+        return false;
     }
-
-    return inClosedList;
+    else
+    {
+        return true;
+    }
 }
 
 AStarSearch::AStarSearch(Board *currentBoard)
 {
     this->currentBoard = currentBoard;
     solved = false;
+    finalBoard = nullptr;
 }
 
 Board *AStarSearch::GetCurrentBoard() const
@@ -54,18 +52,18 @@ void AStarSearch::ExecuteSearch()
         Board *parentBoard = openList.top();
 
         openList.pop();
-        closedList.push_back(parentBoard);
+        closedList.insert(*parentBoard);
 
         if(parentBoard->IsSolved())
         {
-            currentBoard = parentBoard;
+            finalBoard = parentBoard;
 
             break;
         }
 
         ++count;
 
-        std::cout << count << std::endl;
+        // std::cout << count << std::endl;
 
         Board *children[] =
         {

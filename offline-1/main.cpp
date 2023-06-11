@@ -19,14 +19,14 @@ int main()
         }
     }
 
-    Board *board = new HammingBoard(0, k, boardArray, nullptr);
+    Board *board = new ManhattanBoard(0, k, boardArray, nullptr);
     AStarSearch *aStarSearch = new AStarSearch(board);
 
     aStarSearch->ExecuteSearch();
 
     size_t moveCount = aStarSearch->GetMoveCount();
 
-    std::cout << std::endl << "Minimum number of moves = " << moveCount << std::endl;
+    std::cout << "Minimum number of moves = " << moveCount << std::endl << std::endl;
 
     std::vector<Board *> solvePath = aStarSearch->GetSolve();
 

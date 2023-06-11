@@ -171,6 +171,16 @@ Board::Board(const Board &other)
     this->boardArray = std::vector<std::vector<uint64_t>>(other.boardArray);
 }
 
+uint64_t Board::GetPriority() const
+{
+    return 0;
+}
+
+Board *Board::CreateNewChildBoard(const Direction &direction) const
+{
+    return nullptr;
+}
+
 size_t Board::GetBlankX() const
 {
     return blankX;
@@ -245,27 +255,27 @@ bool Board::IsSolved() const
     return solved;
 }
 
-bool Board::operator == (const Board &other)
+void Board::Print(std::ostream &outputStream) const
 {
-    if(dimension == other.dimension)
+    for(size_t i = 0; i < dimension; ++i)
     {
-        for(size_t i = 0; i < dimension; ++i)
+        for(size_t j = 0; j < dimension; ++j)
         {
-            for(size_t j = 0; j < dimension; ++j)
-            {
-                if(boardArray[i][j] != other.boardArray[i][j])
-                {
-                    return false;
-                }
-            }
+            outputStream << boardArray[i][j] << " ";
         }
 
-        return true;
+        outputStream << std::endl;
     }
-    else
-    {
-        return false;
-    }
+}
+
+bool Board::operator == (const Board &other) const
+{
+    return boardArray == other.boardArray;
+}
+
+bool Board::operator < (const Board &other) const
+{
+    return boardArray < other.boardArray;
 }
 
 Board::~Board()
