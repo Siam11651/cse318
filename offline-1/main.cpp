@@ -19,30 +19,71 @@ int main()
         }
     }
 
+    std::cout << "--- Using Hamming Distance ---" << std::endl;
+
     Board *board = new HammingBoard(0, k, boardArray, nullptr);
-    AStarSearch *aStarSearch = new AStarSearch(board);
 
-    aStarSearch->ExecuteSearch();
-
-    size_t moveCount = aStarSearch->GetMoveCount();
-
-    std::cout << std::endl << "Minimum number of moves = " << moveCount << std::endl;
-
-    std::vector<Board *> solvePath = aStarSearch->GetSolve();
-
-    for(size_t i = 0; i < solvePath.size(); ++i)
+    if(board->IsSolvable())
     {
-        for(size_t p = 0; p < board->GetDimension(); ++p)
+        AStarSearch *aStarSearch = new AStarSearch(board);
+
+        aStarSearch->ExecuteSearch();
+
+        size_t moveCount = aStarSearch->GetMoveCount();
+
+        std::cout << std::endl << "Minimum number of moves = " << moveCount << std::endl;
+
+        std::vector<Board *> solvePath = aStarSearch->GetSolve();
+
+        for(size_t i = 0; i < solvePath.size(); ++i)
         {
-            for(size_t q = 0; q < board->GetDimension(); ++q)
+            for(size_t p = 0; p < board->GetDimension(); ++p)
             {
-                std::cout << solvePath[i]->GetCellValue(p, q) << " ";
+                for(size_t q = 0; q < board->GetDimension(); ++q)
+                {
+                    std::cout << solvePath[i]->GetCellValue(p, q) << " ";
+                }
+
+                std::cout << std::endl;
             }
 
             std::cout << std::endl;
         }
 
-        std::cout << std::endl;
+        delete aStarSearch;
+        delete board;
+
+        std::cout << "--- Using Manhattan Distance ---" << std::endl;
+
+        board = new ManhattanBoard(0, k, boardArray, nullptr);
+        aStarSearch = new AStarSearch(board);
+
+        aStarSearch->ExecuteSearch();
+
+        size_t moveCount = aStarSearch->GetMoveCount();
+
+        std::cout << std::endl << "Minimum number of moves = " << moveCount << std::endl;
+
+        std::vector<Board *> solvePath = aStarSearch->GetSolve();
+
+        for(size_t i = 0; i < solvePath.size(); ++i)
+        {
+            for(size_t p = 0; p < board->GetDimension(); ++p)
+            {
+                for(size_t q = 0; q < board->GetDimension(); ++q)
+                {
+                    std::cout << solvePath[i]->GetCellValue(p, q) << " ";
+                }
+
+                std::cout << std::endl;
+            }
+
+            std::cout << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "This puzzle is not solvable" << std::endl;
     }
 
     return 0;
