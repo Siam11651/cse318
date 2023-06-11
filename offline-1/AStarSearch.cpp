@@ -61,7 +61,7 @@ void AStarSearch::ExecuteSearch()
             break;
         }
 
-        ++count;
+        // ++count;
 
         // std::cout << count << std::endl;
 

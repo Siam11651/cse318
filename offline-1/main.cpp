@@ -19,7 +19,7 @@ int main()
         }
     }
 
-    Board *board = new ManhattanBoard(0, k, boardArray, nullptr);
+    Board *board = new HammingBoard(0, k, boardArray, nullptr);
     AStarSearch *aStarSearch = new AStarSearch(board);
 
     aStarSearch->ExecuteSearch();

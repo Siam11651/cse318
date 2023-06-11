@@ -278,6 +278,21 @@ bool Board::operator < (const Board &other) const
     return boardArray < other.boardArray;
 }
 
+bool Board::operator > (const Board &other) const
+{
+    return boardArray > other.boardArray;
+}
+
+bool Board::operator <= (const Board &other) const
+{
+    return boardArray <= other.boardArray;
+}
+
+bool Board::operator >= (const Board &other) const
+{
+    return boardArray >= other.boardArray;
+}
+
 Board::~Board()
 {
     

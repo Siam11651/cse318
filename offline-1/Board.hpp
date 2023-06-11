@@ -38,5 +38,8 @@ public:
     void Print(std::ostream &outputStream) const;
     bool operator == (const Board &other) const;
     bool operator < (const Board &other) const;
+    bool operator > (const Board &other) const;
+    bool operator <= (const Board &other) const;
+    bool operator >= (const Board &other) const;
     ~Board();
 };

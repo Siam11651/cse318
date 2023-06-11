@@ -5,5 +5,5 @@
 class BoardComparator
 {
 public:
-    bool operator ()(Board *left, Board *right);
+    bool operator () (Board *left, Board *right);
 };
