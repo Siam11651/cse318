@@ -61,10 +61,6 @@ void AStarSearch::ExecuteSearch()
             break;
         }
 
-        // ++count;
-
-        // std::cout << count << std::endl;
-
         Board *children[] =
         {
             parentBoard->CreateNewChildBoard(Direction::LEFT),
