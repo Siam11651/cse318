@@ -1,6 +1,6 @@
 #include "HammingBoard.hpp"
 
-HammingBoard::HammingBoard(const size_t &depth, const size_t &dimension, const std::vector<std::vector<uint64_t>> &boardArray, Board *parent) : Board(depth, dimension, boardArray, parent)
+HammingBoard::HammingBoard(const size_t &depth, const size_t &dimension, const std::vector<uint64_t> &boardArray, Board *parent) : Board(depth, dimension, boardArray, parent)
 {
     
 }

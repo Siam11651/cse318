@@ -44,15 +44,13 @@ void AStarSearch::ExecuteSearch()
     std::priority_queue<Board *, std::vector<Board *>, BoardComparator> openList;
 
     openList.push(currentBoard);
-
-    size_t count = 0;
+    closedList.insert(*currentBoard);
 
     while(!openList.empty())
     {
         Board *parentBoard = openList.top();
 
         openList.pop();
-        closedList.insert(*parentBoard);
 
         if(parentBoard->IsSolved())
         {
@@ -74,6 +72,7 @@ void AStarSearch::ExecuteSearch()
             if(children[i] && !InClosedList(children[i]))
             {
                 openList.push(children[i]);
+                closedList.insert(*children[i]);
             }
         }
     }

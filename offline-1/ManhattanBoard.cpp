@@ -1,6 +1,6 @@
 #include "ManhattanBoard.hpp"
 
-ManhattanBoard::ManhattanBoard(const size_t &depth, const size_t &dimension, const std::vector<std::vector<uint64_t>> &boardArray, Board *parent) : Board(depth, dimension, boardArray, parent)
+ManhattanBoard::ManhattanBoard(const size_t &depth, const size_t &dimension, const std::vector<uint64_t> &boardArray, Board *parent) : Board(depth, dimension, boardArray, parent)
 {
     
 }
@@ -17,10 +17,11 @@ uint64_t ManhattanBoard::GetPriority() const
         {
             uint64_t value = GetCellValue(i, j);
 
-            if(value > 0)
+            if(value != 0)
             {
-                size_t targetRow = value / dimension;
-                size_t targetColumn = value % dimension;
+                size_t targetRow = (value - 1) / dimension;
+                size_t targetColumn = (value - 1) % dimension;
+
                 uint64_t gap = 0;
 
                 if(targetRow > i)

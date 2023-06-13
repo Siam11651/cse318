@@ -33,28 +33,13 @@ bool Board::IsSolvableEvenUtil() const
 size_t Board::GetInversionCount() const
 {
     size_t dimension1D = dimension * dimension - 1;
-    uint64_t *array = new uint64_t[dimension1D];
-    bool blankFound = false;
+    std::vector<uint64_t> array;
 
-    for(size_t i = 0; i < dimension; ++i)
+    for(size_t i = 0; i < dimension * dimension; ++i)
     {
-        for(size_t j = 0; j < dimension; ++j)
+        if(boardArray[i] != 0)
         {
-            if(boardArray[i][j] > 0)
-            {
-                if(blankFound)
-                {
-                    array[i * dimension + j - 1] = boardArray[i][j];
-                }
-                else
-                {
-                    array[i * dimension + j] = boardArray[i][j];
-                }
-            }
-            else
-            {
-                blankFound = true;
-            }
+            array.push_back(boardArray[i]);
         }
     }
 
@@ -101,61 +86,55 @@ bool Board::CanShiftBoard(const Direction &direction) const
     return false;
 }
 
-std::vector<std::vector<uint64_t>> Board::GetShiftedBoardArray(const Direction &direction) const
+std::vector<uint64_t> Board::GetShiftedBoardArray(const Direction &direction) const
 {
-    std::vector<std::vector<uint64_t>> newBoardArray = std::vector<std::vector<uint64_t>>(boardArray);
+    std::vector<uint64_t> newBoardArray = std::vector<uint64_t>(boardArray);
 
-    for(size_t i = 0; i < dimension; ++i)
+    for(size_t i = 0; i < dimension * dimension; ++i)
     {
-        for(size_t j = 0; j < dimension; ++j)
-        {
-            newBoardArray[i][j] = GetCellValue(i, j);
-        }
+        newBoardArray[i] = boardArray[i];
     }
 
     if(direction == Direction::LEFT)
     {
-        std::swap(newBoardArray[GetBlankY()][GetBlankX()], newBoardArray[GetBlankY()][GetBlankX() - 1]);
+        std::swap(newBoardArray[GetBlankY() * dimension + GetBlankX()], newBoardArray[GetBlankY() * dimension + GetBlankX() - 1]);
     }
     else if(direction == Direction::RIGHT)
     {
-        std::swap(newBoardArray[GetBlankY()][GetBlankX()], newBoardArray[GetBlankY()][GetBlankX() + 1]);
+        std::swap(newBoardArray[GetBlankY() * dimension + GetBlankX()], newBoardArray[GetBlankY() * dimension + GetBlankX() + 1]);
     }
     else if(direction == Direction::UP)
     {
-        std::swap(newBoardArray[GetBlankY()][GetBlankX()], newBoardArray[GetBlankY() - 1][GetBlankX()]);
+        std::swap(newBoardArray[GetBlankY() * dimension + GetBlankX()], newBoardArray[(GetBlankY() - 1) * dimension + GetBlankX()]);
     }
     else if(direction == Direction::DOWN)
     {
-        std::swap(newBoardArray[GetBlankY()][GetBlankX()], newBoardArray[GetBlankY() + 1][GetBlankX()]);
+        std::swap(newBoardArray[GetBlankY() * dimension + GetBlankX()], newBoardArray[(GetBlankY() + 1) * dimension + GetBlankX()]);
     }
 
     return newBoardArray;
 }
 
-Board::Board(const size_t &depth, const size_t &dimension, const std::vector<std::vector<uint64_t>> &boardArray, Board *parent)
+Board::Board(const size_t &depth, const size_t &dimension, const std::vector<uint64_t> &boardArray, Board *parent)
 {
     this->depth = depth;
     this->parent = parent;
     this->dimension = dimension;
     blankX = blankY = dimension;
-    this->boardArray = std::vector<std::vector<uint64_t>>(boardArray);
+    this->boardArray = std::vector<uint64_t>(boardArray);
 
-    for(size_t i = 0; i < dimension; ++i)
+    for(size_t i = 0; i < dimension * dimension; ++i)
     {
-        for(size_t j = 0; j < dimension; ++j)
+        if(boardArray[i] == 0)
         {
-            if(boardArray[i][j] == 0)
+            if(blankX == dimension)
             {
-                if(blankX == dimension)
-                {
-                    blankX = j;
-                    blankY = i;
-                }
-                else
-                {
-                    // multiple blank exception
-                }
+                blankX = i % dimension;
+                blankY = i / dimension;
+            }
+            else
+            {
+                // multiple blank exception
             }
         }
     }
@@ -168,7 +147,7 @@ Board::Board(const Board &other)
     this->dimension = other.dimension;
     blankX = other.blankX;
     blankY = other.blankY;
-    this->boardArray = std::vector<std::vector<uint64_t>>(other.boardArray);
+    this->boardArray = std::vector<uint64_t>(other.boardArray);
 }
 
 uint64_t Board::GetPriority() const
@@ -212,7 +191,7 @@ uint64_t Board::GetCellValue(const size_t &row, const size_t &column) const
     }
     else
     {
-        return boardArray[row][column];
+        return boardArray[row * dimension + column];
     }
 }
 
@@ -237,18 +216,15 @@ bool Board::IsSolved() const
 {
     bool solved = true;
 
-    for(size_t i = 0; solved && i < dimension; ++i)
+    for(size_t i = 0; solved && i < dimension * dimension; ++i)
     {
-        for(size_t j = 0; j < dimension; ++j)
+        uint64_t value = boardArray[i];
+
+        if(value != 0 && i + 1 != value)
         {
-            uint64_t value = boardArray[i][j];
+            solved = false;
 
-            if(value != 0 && i * dimension + j + 1 != value)
-            {
-                solved = false;
-
-                break;
-            }
+            break;
         }
     }
 
@@ -261,11 +237,13 @@ void Board::Print(std::ostream &outputStream) const
     {
         for(size_t j = 0; j < dimension; ++j)
         {
-            outputStream << boardArray[i][j] << " ";
+            outputStream << boardArray[i * dimension + j] << " ";
         }
 
         outputStream << std::endl;
     }
+
+    outputStream << std::endl;
 }
 
 bool Board::operator == (const Board &other) const

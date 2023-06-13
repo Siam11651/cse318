@@ -11,7 +11,7 @@ class Board
 {
 private:
     size_t dimension, blankX, blankY, depth;
-    std::vector<std::vector<uint64_t>> boardArray;
+    std::vector<uint64_t> boardArray;
     Board *parent;
 
     bool IsSolvableOddUtil() const;
@@ -19,13 +19,13 @@ private:
     size_t GetInversionCount() const;
 
 protected:
-    size_t GetDepth() const;
     bool CanShiftBoard(const Direction &direction) const;
-    std::vector<std::vector<uint64_t>> GetShiftedBoardArray(const Direction &direction) const;
+    std::vector<uint64_t> GetShiftedBoardArray(const Direction &direction) const;
 
 public:
-    Board(const size_t &depth, const size_t &dimension, const std::vector<std::vector<uint64_t>> &boardArray, Board *parent);
+    Board(const size_t &depth, const size_t &dimension, const std::vector<uint64_t> &boardArray, Board *parent);
     Board(const Board &other);
+    size_t GetDepth() const;
     virtual uint64_t GetPriority() const;
     virtual Board *CreateNewChildBoard(const Direction &direction) const;
     size_t GetBlankX() const;
