@@ -2,9 +2,41 @@
 #include "HammingBoard.hpp"
 #include "ManhattanBoard.hpp"
 #include "AStarSearch.hpp"
+#include "HeuristicEnum.hpp"
 
-int main()
+int main(int argc, char **argv)
 {
+    if(argc < 1)
+    {
+        std::cerr << "Need an argument for heuristic" << std::endl;
+
+        return -1;
+    }
+
+    std::string heuristicArgument(argv[1]);
+
+    for(size_t i = 0; i < heuristicArgument.size(); ++i)
+    {
+        heuristicArgument[i] = std::tolower(heuristicArgument[i]);
+    }
+
+    HeuristicEnum heuristicEnum;
+
+    if(heuristicArgument == "hamming")
+    {
+        heuristicEnum = HeuristicEnum::HAMMING;
+    }
+    else if(heuristicArgument == "manhattan")
+    {
+        heuristicEnum = HeuristicEnum::MANHATTAN;
+    }
+    else
+    {
+        std::cerr << "No such heuristic" << std::endl;
+
+        return -1;
+    }
+
     size_t k;
 
     std::cin >> k;
@@ -19,7 +51,17 @@ int main()
         }
     }
 
-    Board *board = new ManhattanBoard(0, k, boardArray, nullptr);
+    Board *board = nullptr;
+
+    if(heuristicEnum == HeuristicEnum::HAMMING)
+    {
+        board = new HammingBoard(0, k, boardArray, nullptr);
+    }
+    else
+    {
+        board = new ManhattanBoard(0, k, boardArray, nullptr);
+    }
+
     AStarSearch *aStarSearch = new AStarSearch(board);
 
     aStarSearch->ExecuteSearch();
@@ -32,17 +74,7 @@ int main()
 
     for(size_t i = 0; i < solvePath.size(); ++i)
     {
-        for(size_t p = 0; p < board->GetDimension(); ++p)
-        {
-            for(size_t q = 0; q < board->GetDimension(); ++q)
-            {
-                std::cout << solvePath[i]->GetCellValue(p, q) << " ";
-            }
-
-            std::cout << std::endl;
-        }
-
-        std::cout << std::endl;
+        solvePath[i]->Print(std::cout);
     }
 
     return 0;

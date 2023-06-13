@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <vector>
 #include "Direction.hpp"
+#include "OutOfCellException.hpp"
 
 class Board
 {

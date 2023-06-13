@@ -179,15 +179,15 @@ uint64_t Board::GetCellValue(const size_t &row, const size_t &column) const
 {
     if(row >= dimension && column >= dimension)
     {
-        // both beyond dimension exeption
+        throw OutOfCellException();
     }
     else if(row >= dimension)
     {
-        // both beyond dimension exeption
+        throw OutOfCellException();
     }
     else if(column >= dimension)
     {
-        // both beyond dimension exeption
+        throw OutOfCellException();
     }
     else
     {

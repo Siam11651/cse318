@@ -1,4 +1,3 @@
-#include <iostream>
 #include "AStarSearch.hpp"
 
 void AStarSearch::BuildSolution()
