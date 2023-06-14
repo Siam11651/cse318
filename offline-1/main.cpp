@@ -62,19 +62,26 @@ int main(int argc, char **argv)
         board = new ManhattanBoard(0, k, boardArray, nullptr);
     }
 
-    AStarSearch *aStarSearch = new AStarSearch(board);
-
-    aStarSearch->ExecuteSearch();
-
-    size_t moveCount = aStarSearch->GetMoveCount();
-
-    std::cout << "Minimum number of moves = " << moveCount << std::endl << std::endl;
-
-    std::vector<Board *> solvePath = aStarSearch->GetSolve();
-
-    for(size_t i = 0; i < solvePath.size(); ++i)
+    if(board->IsSolvable())
     {
-        solvePath[i]->Print(std::cout);
+        AStarSearch *aStarSearch = new AStarSearch(board);
+
+        aStarSearch->ExecuteSearch();
+
+        size_t moveCount = aStarSearch->GetMoveCount();
+
+        std::cout << "Minimum number of moves = " << moveCount << std::endl << std::endl;
+
+        std::vector<Board *> solvePath = aStarSearch->GetSolve();
+
+        for(size_t i = 0; i < solvePath.size(); ++i)
+        {
+            solvePath[i]->Print(std::cout);
+        }
+    }
+    else
+    {
+        std::cout << "Unsolvable puzzle" << std::endl;
     }
 
     return 0;
