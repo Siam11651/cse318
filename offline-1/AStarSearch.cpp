@@ -6,7 +6,7 @@ void AStarSearch::BuildSolution()
 
     while(now)
     {
-        solvePath.push_back(now);
+        solvePath.push_back(*now);
 
         now = now->GetParent();
     }
@@ -40,8 +40,6 @@ Board *AStarSearch::GetCurrentBoard() const
 
 void AStarSearch::ExecuteSearch()
 {
-    std::priority_queue<Board *, std::vector<Board *>, BoardComparator> openList;
-
     openList.push(currentBoard);
     closedList.insert(*currentBoard);
 
@@ -72,6 +70,11 @@ void AStarSearch::ExecuteSearch()
             {
                 openList.push(children[i]);
                 closedList.insert(*children[i]);
+                closedPointers.push_back(children[i]);
+            }
+            else
+            {
+                delete children[i];
             }
         }
     }
@@ -96,7 +99,7 @@ size_t AStarSearch::GetMoveCount()
     }
 }
 
-std::vector<Board *> AStarSearch::GetSolve()
+std::vector<Board> AStarSearch::GetSolve()
 {
     if(solved)
     {
@@ -109,11 +112,27 @@ std::vector<Board *> AStarSearch::GetSolve()
     }
     else
     {
-        return std::vector<Board *>();
+        return std::vector<Board>();
     }
 }
 
 AStarSearch::~AStarSearch()
 {
+    std::set<Board *> deleted;
 
+    while(!openList.empty())
+    {
+        delete openList.top();
+
+        deleted.insert(openList.top());        
+        openList.pop();
+    }
+
+    for(size_t i = 0; i < closedPointers.size(); ++i)
+    {
+        if(deleted.find(closedPointers[i]) == deleted.end())
+        {
+            delete closedPointers[i];   
+        }
+    }
 }

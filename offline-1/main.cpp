@@ -72,17 +72,21 @@ int main(int argc, char **argv)
 
         std::cout << "Minimum number of moves = " << moveCount << std::endl << std::endl;
 
-        std::vector<Board *> solvePath = aStarSearch->GetSolve();
+        std::vector<Board> solvePath = aStarSearch->GetSolve();
 
         for(size_t i = 0; i < solvePath.size(); ++i)
         {
-            solvePath[i]->Print(std::cout);
+            solvePath[i].Print(std::cout);
         }
+
+        delete aStarSearch;
     }
     else
     {
         std::cout << "Unsolvable puzzle" << std::endl;
     }
+
+    delete board;
 
     return 0;
 }
