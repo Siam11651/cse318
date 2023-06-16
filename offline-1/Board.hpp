@@ -34,6 +34,7 @@ public:
     size_t GetDimension() const;
     uint64_t GetCellValue(const size_t &row, const size_t &column) const;
     Board *GetParent() const;
+    std::vector<uint64_t> GetBoardArray() const;
     bool IsSolvable() const;
     bool IsSolved() const;
     void Print(std::ostream &outputStream) const;

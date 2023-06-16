@@ -200,6 +200,11 @@ Board *Board::GetParent() const
     return parent;
 }
 
+std::vector<uint64_t> Board::GetBoardArray() const
+{
+    return boardArray;
+}
+
 bool Board::IsSolvable() const
 {
     if(dimension % 2 == 0)
@@ -248,28 +253,33 @@ void Board::Print(std::ostream &outputStream) const
 
 bool Board::operator == (const Board &other) const
 {
-    return boardArray == other.boardArray;
+    return boardArray == other.boardArray && depth == other.depth;
 }
 
 bool Board::operator < (const Board &other) const
 {
+    if(boardArray == other.boardArray)
+    {
+        return depth < other.depth;
+    }
+
     return boardArray < other.boardArray;
 }
 
-bool Board::operator > (const Board &other) const
-{
-    return boardArray > other.boardArray;
-}
+// bool Board::operator > (const Board &other) const
+// {
+//     return boardArray > other.boardArray;
+// }
 
-bool Board::operator <= (const Board &other) const
-{
-    return boardArray <= other.boardArray;
-}
+// bool Board::operator <= (const Board &other) const
+// {
+//     return boardArray <= other.boardArray;
+// }
 
-bool Board::operator >= (const Board &other) const
-{
-    return boardArray >= other.boardArray;
-}
+// bool Board::operator >= (const Board &other) const
+// {
+//     return boardArray >= other.boardArray;
+// }
 
 Board::~Board()
 {
