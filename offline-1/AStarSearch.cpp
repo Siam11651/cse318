@@ -32,6 +32,7 @@ AStarSearch::AStarSearch(Board *currentBoard)
     this->currentBoard = currentBoard;
     solved = false;
     finalBoard = nullptr;
+    explored = expanded = 0;
 }
 
 Board *AStarSearch::GetCurrentBoard() const
@@ -39,14 +40,27 @@ Board *AStarSearch::GetCurrentBoard() const
     return currentBoard;
 }
 
+size_t AStarSearch::GetExploredCount() const
+{
+    return explored;
+}
+
+size_t AStarSearch::GetExpandedCount() const
+{
+    return expanded;
+}
+
 void AStarSearch::ExecuteSearch()
 {
     openList.push(currentBoard);
     closedList.insert(*currentBoard);
 
+    ++expanded;
+
     while(!openList.empty())
     {
         Board *parentBoard = openList.top();
+        ++explored;
 
         openList.pop();
 
@@ -72,6 +86,8 @@ void AStarSearch::ExecuteSearch()
                 openList.push(children[i]);
                 closedList.insert(*children[i]);
                 closedPointers.push_back(children[i]);
+
+                ++expanded;
             }
             else
             {

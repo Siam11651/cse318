@@ -79,6 +79,9 @@ int main(int argc, char **argv)
             solvePath[i].Print(std::cout);
         }
 
+        std::cout << "States Explored = " << aStarSearch->GetExploredCount() << std::endl;
+        std::cout << "States Expanded = " << aStarSearch->GetExpandedCount() << std::endl;
+
         delete aStarSearch;
     }
     else
