@@ -6,6 +6,11 @@ Bowl::Bowl(const Player &player)
     count = 4;
 }
 
+size_t Bowl::GetCount() const
+{
+    return count;
+}
+
 size_t Bowl::TakePebble(const Player &player, const size_t &hand)
 {
     ++count;

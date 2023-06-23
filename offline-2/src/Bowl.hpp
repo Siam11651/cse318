@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include "Player.hpp"
 
 class Bowl
@@ -10,6 +11,7 @@ protected:
 
 public:
     Bowl(const Player &player);
+    size_t GetCount() const;
     virtual size_t TakePebble(const Player &player, const size_t &hand);
     ~Bowl();
 };
