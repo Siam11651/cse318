@@ -11,7 +11,9 @@ protected:
 
 public:
     Bowl(const Player &player);
+    Bowl(const Bowl &other);
     size_t GetCount() const;
-    virtual size_t TakePebble(const Player &player, const size_t &hand);
+    void SetCount(const size_t &count);
+    virtual bool TakePebble(const Player &player, size_t &hand);
     ~Bowl();
 };

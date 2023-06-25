@@ -22,49 +22,82 @@ MancalaState::MancalaState()
     };
 }
 
+MancalaState::MancalaState(const MancalaState &other)
+{
+    bowls = 
+    {
+        new Bowl(*other.bowls[0]),
+        new Bowl(*other.bowls[1]),
+        new Bowl(*other.bowls[2]),
+        new Bowl(*other.bowls[3]),
+        new Bowl(*other.bowls[4]),
+        new Bowl(*other.bowls[5]),
+        new BigBowl(*other.bowls[6]),
+        new Bowl(*other.bowls[7]),
+        new Bowl(*other.bowls[8]),
+        new Bowl(*other.bowls[9]),
+        new Bowl(*other.bowls[10]),
+        new Bowl(*other.bowls[11]),
+        new Bowl(*other.bowls[12]),
+        new BigBowl(*other.bowls[13])
+    };
+}
+
 Bowl *MancalaState::GetBowl(const size_t &bowlIndex) const
 {
     return bowls[bowlIndex];
 }
 
-void MancalaState::MakeMove(const Player &player, const size_t &index)
+bool MancalaState::MakeMove(const Player &player, const size_t &index)
 {
     size_t actualIndex;
 
     if(player == Player::BLACK)
     {
-        actualIndex = index;
+        actualIndex = 6 - index;
     }
     else
     {
-        actualIndex = index + 6;
+        actualIndex = 6 + index;
     }
 
     size_t hand = bowls[actualIndex]->GetCount();
+
+    bowls[actualIndex]->SetCount(0);
+
     ++actualIndex;
+    bool moveAgain;
 
     while(hand > 0)
     {
-        hand = bowls[actualIndex]->TakePebble(player, hand);
+        moveAgain = bowls[actualIndex % 14]->TakePebble(player, hand);
+        ++actualIndex;
     }
+
+    return moveAgain;
 }
 
-size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristic, const size_t &depth)
+size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicType, const size_t &depth)
 {
-    int64_t alpha = INT64_MAX, beta = INT64_MIN;
+    int64_t alpha = INT64_MIN, beta = INT64_MAX;
     size_t index;
 
     if(player == Player::BLACK)
     {
         int64_t maxHeuristic = INT64_MIN;
 
-        for(size_t i = 0; i < moves.size(); ++i)
+        for(size_t i = 0; i < 6; ++i)
         {
-            MancalaState *newMancalaState = new MancalaState();
+            MancalaState *newMancalaState = new MancalaState(*this);
 
-            newMancalaState->MakeMove(Player::WHITE, i + 6);
+            if(newMancalaState->GetBowl(i)->GetCount() == 0)
+            {
+                continue;
+            }
 
-            int64_t heuristic = moves[i]->GetHeuristic(Player::WHITE, heuristic, depth - 1, alpha, beta);
+            newMancalaState->MakeMove(Player::WHITE, i + 1);
+
+            int64_t heuristic = newMancalaState->GetHeuristic(Player::WHITE, heuristicType, depth - 1, alpha, beta);
 
             if(heuristic > maxHeuristic)
             {
@@ -89,13 +122,18 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristic, 
     {
         int64_t minHeuristic = INT64_MAX;
 
-        for(size_t i = 0; i < moves.size(); ++i)
+        for(size_t i = 0; i < 6; ++i)
         {
-            MancalaState *newMancalaState = new MancalaState();
+            MancalaState *newMancalaState = new MancalaState(*this);
 
-            newMancalaState->MakeMove(Player::BLACK, i);
+            if(newMancalaState->GetBowl(i + 7)->GetCount() == 0)
+            {
+                continue;
+            }
 
-            int64_t heuristic = newMancalaState->GetHeuristic(Player::BLACK, heuristic, depth - 1, alpha, beta);
+            newMancalaState->MakeMove(Player::BLACK, i + 1);
+
+            int64_t heuristic = newMancalaState->GetHeuristic(Player::BLACK, heuristicType, depth - 1, alpha, beta);
 
             if(heuristic < minHeuristic)
             {
@@ -116,14 +154,16 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristic, 
         }
     }
 
+    ++index;
+
     return index;
 }
 
-int64_t MancalaState::GetHeuristic(const Player &player, const size_t &heuristic, const size_t &depth, int64_t &alpha, int64_t &beta)
+int64_t MancalaState::GetHeuristic(const Player &player, const size_t &heuristicType, const size_t &depth, int64_t &alpha, int64_t &beta)
 {
     if(depth == 0)
     {
-        if(heuristic == 1)
+        if(heuristicType == 1)
         {
             return heuristic1(player);
         }
@@ -134,13 +174,18 @@ int64_t MancalaState::GetHeuristic(const Player &player, const size_t &heuristic
         {
             int64_t maxHeuristic = INT64_MIN;
 
-            for(size_t i = 0; i < moves.size(); ++i)
+            for(size_t i = 0; i < 6; ++i)
             {
-                MancalaState *newMancalaState = new MancalaState();
+                MancalaState *newMancalaState = new MancalaState(*this);
 
-                newMancalaState->MakeMove(Player::WHITE, i + 6);
+                if(newMancalaState->GetBowl(i)->GetCount() == 0)
+                {
+                    continue;
+                }
 
-                int64_t heuristic = newMancalaState->GetHeuristic(Player::WHITE, heuristic, depth - 1, alpha, beta);
+                newMancalaState->MakeMove(Player::WHITE, i + 1);
+
+                int64_t heuristic = newMancalaState->GetHeuristic(Player::WHITE, heuristicType, depth - 1, alpha, beta);
                 maxHeuristic = std::max(maxHeuristic, heuristic);
                 alpha = std::max(alpha, heuristic);
 
@@ -160,13 +205,18 @@ int64_t MancalaState::GetHeuristic(const Player &player, const size_t &heuristic
         {
             int64_t minHeuristic = INT64_MAX;
 
-            for(size_t i = 0; i < moves.size(); ++i)
+            for(size_t i = 0; i < 6; ++i)
             {
-                MancalaState *newMancalaState = new MancalaState();
+                MancalaState *newMancalaState = new MancalaState(*this);
 
-                newMancalaState->MakeMove(Player::BLACK, i);
+                if(newMancalaState->GetBowl(i + 7)->GetCount() == 0)
+                {
+                    continue;
+                }
 
-                int64_t heuristic = newMancalaState->GetHeuristic(Player::BLACK, heuristic, depth - 1, alpha, beta);
+                newMancalaState->MakeMove(Player::BLACK, i + 1);
+
+                int64_t heuristic = newMancalaState->GetHeuristic(Player::BLACK, heuristicType, depth - 1, alpha, beta);
                 minHeuristic = std::min(minHeuristic, heuristic);
                 beta = std::min(beta, heuristic);
 
@@ -189,11 +239,11 @@ int64_t MancalaState::heuristic1(const Player &player) const
 {
     if(player == Player::BLACK)
     {
-        return bowls[6] - bowls[13];
+        return bowls[6]->GetCount() - bowls[13]->GetCount();
     }
     else
     {
-        return bowls[13] - bowls[6];
+        return bowls[13]->GetCount() - bowls[6]->GetCount();
     }
 }
 
@@ -203,7 +253,7 @@ void MancalaState::Print() const
     
     for(size_t i = 13; i > 6; --i)
     {
-        std::cout << bowls[i] << "\t";
+        std::cout << bowls[i]->GetCount() << "\t";
     }
 
     std::cout << std::endl;
@@ -211,10 +261,11 @@ void MancalaState::Print() const
 
     for(size_t i = 0; i < 7; ++i)
     {
-        std::cout << bowls[i] << "\t";
+        std::cout << bowls[i]->GetCount() << "\t";
     }
 
     std::cout << std::endl;
+    std::cout << "Black" << std::endl;
 }
 
 MancalaState::~MancalaState()

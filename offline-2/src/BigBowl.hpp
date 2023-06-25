@@ -9,6 +9,7 @@ private:
     /* data */
 public:
     BigBowl(const Player &player);
-    size_t TakePebble(const Player &player, const size_t &hand);
+    BigBowl(const Bowl &other);
+    bool TakePebble(const Player &player, size_t &hand);
     ~BigBowl();
 };

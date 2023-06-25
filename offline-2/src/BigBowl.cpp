@@ -5,16 +5,22 @@ BigBowl::BigBowl(const Player &player) : Bowl(player)
     count = 0;
 }
 
-size_t BigBowl::TakePebble(const Player &player, const size_t &hand)
+BigBowl::BigBowl(const Bowl &other) : Bowl(other)
+{
+    
+}
+
+bool BigBowl::TakePebble(const Player &player, size_t &hand)
 {
     if(player == this->player)
     {
         ++count;
+        --hand;
 
-        return hand - 1;
+        return true;
     }
     else
     {
-        return hand;
+        return false;;
     }
 }

@@ -29,14 +29,23 @@ State *AiState::Execute()
 
     std::cout << "Press any key for AI to make a move" << std::endl;
 
-    getchar();
+    while(std::cin.get() == 10);
 
-    if(versusHuman)
+    size_t bestMove = mancalaState->GetBestMove(player, 1, 5);
+
+    if(mancalaState->MakeMove(player, bestMove))
     {
-        return new HumanState(mancalaState);
+        return new AiState(false, player, mancalaState);
     }
     else
     {
-        return new AiState(false, nextPlayer, mancalaState);
-    }
+        if(versusHuman)
+        {
+            return new HumanState(mancalaState);
+        }
+        else
+        {
+            return new AiState(false, nextPlayer, mancalaState);
+        }
+    }   
 }

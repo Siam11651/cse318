@@ -1,7 +1,7 @@
 #include "HeuristicData.hpp"
 
-uint8_t HeuristicData::heuristic1 = 0;
-uint8_t HeuristicData::heuristic2 = 0;
+uint16_t HeuristicData::heuristic1 = 0;
+uint16_t HeuristicData::heuristic2 = 0;
 uint64_t HeuristicData::w11 = 0;
 uint64_t HeuristicData::w12 = 0;
 uint64_t HeuristicData::w13 = 0;

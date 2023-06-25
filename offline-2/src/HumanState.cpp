@@ -11,13 +11,19 @@ State *HumanState::Execute()
 {
     mancalaState->Print();
 
+    std::cout << "Human to move" << std::endl;
     std::cout << "Next move:" << std::endl;
 
-    uint8_t move;
+    uint16_t move;
 
     std::cin >> move;
 
-    mancalaState->MakeMove(Player::BLACK, move);
-
-    return new AiState(true, Player::WHITE, mancalaState);
+    if(mancalaState->MakeMove(Player::BLACK, move))
+    {
+        return new HumanState(mancalaState);
+    }
+    else
+    {
+        return new AiState(true, Player::WHITE, mancalaState);
+    }
 }
