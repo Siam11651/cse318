@@ -66,12 +66,32 @@ bool MancalaState::MakeMove(const Player &player, const size_t &index)
     bowls[actualIndex]->SetCount(0);
 
     ++actualIndex;
-    bool moveAgain;
+    bool moveAgain, couldMove = false;
+    size_t lastBowlPreviousCount = hand;
 
     while(hand > 0)
     {
+        couldMove = true;
+        lastBowlPreviousCount = bowls[actualIndex % 14]->GetCount();
         moveAgain = bowls[actualIndex % 14]->TakePebble(player, hand);
         ++actualIndex;
+    }
+
+    if(couldMove && !moveAgain && lastBowlPreviousCount == 0)
+    {
+        --actualIndex;
+
+        if(player == Player::BLACK)
+        {
+            bowls[6]->SetCount(bowls[6]->GetCount() + bowls[actualIndex % 14]->GetCount() + bowls[12 - (actualIndex % 14)]->GetCount());
+        }
+        else
+        {
+            bowls[13]->SetCount(bowls[6]->GetCount() + bowls[actualIndex % 14]->GetCount() + bowls[12 - (actualIndex % 14)]->GetCount());
+        }
+
+        bowls[actualIndex % 14]->SetCount(0);
+        bowls[12 - (actualIndex % 14)]->SetCount(0);
     }
 
     return moveAgain;
