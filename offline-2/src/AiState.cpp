@@ -1,6 +1,7 @@
 #include <iostream>
 #include "AiState.hpp"
 #include "HumanState.hpp"
+#include "HeuristicData.hpp"
 
 AiState::AiState(const bool &versusHuman, const Player &player, MancalaState *mancalaState) : State(mancalaState)
 {
@@ -31,7 +32,18 @@ State *AiState::Execute()
 
     while(std::cin.get() == 10);
 
-    size_t bestMove = mancalaState->GetBestMove(player, 1, 5);
+    size_t heuristic;
+
+    if(player == Player::BLACK)
+    {
+        heuristic = HeuristicData::heuristic1;
+    }
+    else
+    {
+        heuristic = HeuristicData::heuristic2;
+    }
+
+    size_t bestMove = mancalaState->GetBestMove(player, heuristic, 5);
 
     if(mancalaState->MakeMove(player, bestMove))
     {

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "MancalaState.hpp"
+#include "HeuristicData.hpp"
 
 MancalaState::MancalaState()
 {
@@ -24,6 +25,8 @@ MancalaState::MancalaState()
 
 MancalaState::MancalaState(const MancalaState &other)
 {
+    additionalMoveCount = other.additionalMoveCount;
+    caputured = other.caputured;
     bowls = 
     {
         new Bowl(*other.bowls[0]),
@@ -101,6 +104,8 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
 {
     int64_t alpha = INT64_MIN, beta = INT64_MAX;
     size_t index;
+    additionalMoveCount = 0;
+    caputured = 0;
 
     if(player == Player::BLACK)
     {
@@ -115,9 +120,19 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
                 continue;
             }
 
-            newMancalaState->MakeMove(Player::WHITE, i + 1);
+            Player nextPlayer;
 
-            int64_t heuristic = newMancalaState->GetHeuristic(Player::WHITE, heuristicType, depth - 1, alpha, beta);
+            if(newMancalaState->MakeMove(Player::BLACK, i + 1))
+            {
+                nextPlayer = Player::BLACK;
+                ++additionalMoveCount;
+            }
+            else
+            {
+                nextPlayer = Player::WHITE;
+            }
+
+            int64_t heuristic = newMancalaState->GetHeuristic(nextPlayer, heuristicType, depth - 1, alpha, beta);
 
             if(heuristic > maxHeuristic)
             {
@@ -151,9 +166,19 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
                 continue;
             }
 
-            newMancalaState->MakeMove(Player::BLACK, i + 1);
+            Player nextPlayer;
 
-            int64_t heuristic = newMancalaState->GetHeuristic(Player::BLACK, heuristicType, depth - 1, alpha, beta);
+            if(newMancalaState->MakeMove(Player::WHITE, i + 1))
+            {
+                nextPlayer = Player::WHITE;
+                ++additionalMoveCount;
+            }
+            else
+            {
+                nextPlayer = Player::BLACK;
+            }
+
+            int64_t heuristic = newMancalaState->GetHeuristic(nextPlayer, heuristicType, depth - 1, alpha, beta);
 
             if(heuristic < minHeuristic)
             {
@@ -185,7 +210,19 @@ int64_t MancalaState::GetHeuristic(const Player &player, const size_t &heuristic
     {
         if(heuristicType == 1)
         {
-            return heuristic1(player);
+            return Heuristic1(player);
+        }
+        else if(heuristicType == 2)
+        {
+            return Heuristic2(player);
+        }
+        else if(heuristicType == 3)
+        {
+            return Heuristic3(player);
+        }
+        else if(heuristicType == 4)
+        {
+            return Heuristic4(player);
         }
     }
     else
@@ -203,9 +240,19 @@ int64_t MancalaState::GetHeuristic(const Player &player, const size_t &heuristic
                     continue;
                 }
 
-                newMancalaState->MakeMove(Player::WHITE, i + 1);
+                Player nextPlayer;
 
-                int64_t heuristic = newMancalaState->GetHeuristic(Player::WHITE, heuristicType, depth - 1, alpha, beta);
+                if(newMancalaState->MakeMove(Player::BLACK, i + 1))
+                {
+                    nextPlayer = Player::BLACK;
+                    ++additionalMoveCount;
+                }
+                else
+                {
+                    nextPlayer = Player::WHITE;
+                }
+
+                int64_t heuristic = newMancalaState->GetHeuristic(nextPlayer, heuristicType, depth - 1, alpha, beta);
                 maxHeuristic = std::max(maxHeuristic, heuristic);
                 alpha = std::max(alpha, heuristic);
 
@@ -234,9 +281,19 @@ int64_t MancalaState::GetHeuristic(const Player &player, const size_t &heuristic
                     continue;
                 }
 
-                newMancalaState->MakeMove(Player::BLACK, i + 1);
+                Player nextPlayer;
 
-                int64_t heuristic = newMancalaState->GetHeuristic(Player::BLACK, heuristicType, depth - 1, alpha, beta);
+                if(newMancalaState->MakeMove(Player::WHITE, i + 1))
+                {
+                    nextPlayer = Player::WHITE;
+                    ++additionalMoveCount;
+                }
+                else
+                {
+                    nextPlayer = Player::BLACK;
+                }
+
+                int64_t heuristic = newMancalaState->GetHeuristic(nextPlayer, heuristicType, depth - 1, alpha, beta);
                 minHeuristic = std::min(minHeuristic, heuristic);
                 beta = std::min(beta, heuristic);
 
@@ -255,15 +312,120 @@ int64_t MancalaState::GetHeuristic(const Player &player, const size_t &heuristic
     }
 }
 
-int64_t MancalaState::heuristic1(const Player &player) const
+int64_t MancalaState::Heuristic1(const Player &player) const
 {
     if(player == Player::BLACK)
     {
-        return bowls[6]->GetCount() - bowls[13]->GetCount();
+        return (int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount();
     }
     else
     {
-        return bowls[13]->GetCount() - bowls[6]->GetCount();
+        return (int64_t)bowls[13]->GetCount() - (int64_t)bowls[6]->GetCount();
+    }
+}
+
+int64_t MancalaState::Heuristic2(const Player &player) const
+{
+    size_t blackCount = 0;
+    size_t whiteCount = 0;
+
+    for(size_t i = 0; i < 6; ++i)
+    {
+        blackCount += bowls[i]->GetCount();
+        whiteCount += bowls[12 - i]->GetCount();
+    }
+
+    if(player == Player::BLACK)
+    {
+        int64_t w1 = HeuristicData::w21;
+        int64_t w2 = HeuristicData::w22;
+        int64_t part1 = ((int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount()) * w1;
+        int64_t part2 = ((int64_t)blackCount - (int64_t)whiteCount) * w2;
+
+        return part1 + part2;
+    }
+    else
+    {
+        int64_t w1 = HeuristicData::w11;
+        int64_t w2 = HeuristicData::w12;
+        int64_t part1 = ((int64_t)bowls[13]->GetCount() - (int64_t)bowls[6]->GetCount()) * w1;
+        int64_t part2 = ((int64_t)whiteCount - (int64_t)blackCount) * w2;
+
+        return part1 + part2;
+    }
+}
+
+int64_t MancalaState::Heuristic3(const Player &player) const
+{
+    size_t blackCount = 0;
+    size_t whiteCount = 0;
+
+    for(size_t i = 0; i < 6; ++i)
+    {
+        blackCount += bowls[i]->GetCount();
+        whiteCount += bowls[12 - i]->GetCount();
+    }
+
+    if(player == Player::BLACK)
+    {
+        int64_t w1 = HeuristicData::w21;
+        int64_t w2 = HeuristicData::w22;
+        int64_t w3 = HeuristicData::w23;
+        int64_t part1 = ((int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount()) * w1;
+        int64_t part2 = ((int64_t)blackCount - (int64_t)whiteCount) * w2;
+        int64_t part3 = additionalMoveCount * w3;
+
+        return part1 + part2 + part3;
+    }
+    else
+    {
+        int64_t w1 = HeuristicData::w11;
+        int64_t w2 = HeuristicData::w12;
+        int64_t w3 = HeuristicData::w13;
+        int64_t part1 = ((int64_t)bowls[13]->GetCount() - (int64_t)bowls[6]->GetCount()) * w1;
+        int64_t part2 = ((int64_t)whiteCount - (int64_t)blackCount) * w2;
+        int64_t part3 = additionalMoveCount * w3;
+
+        return part1 + part2 + part3;
+    }
+}
+
+int64_t MancalaState::Heuristic4(const Player &player) const
+{
+    size_t blackCount = 0;
+    size_t whiteCount = 0;
+
+    for(size_t i = 0; i < 6; ++i)
+    {
+        blackCount += bowls[i]->GetCount();
+        whiteCount += bowls[12 - i]->GetCount();
+    }
+
+    if(player == Player::BLACK)
+    {
+        int64_t w1 = HeuristicData::w21;
+        int64_t w2 = HeuristicData::w22;
+        int64_t w3 = HeuristicData::w23;
+        int64_t w4 = HeuristicData::w24;
+        int64_t part1 = ((int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount()) * w1;
+        int64_t part2 = ((int64_t)blackCount - (int64_t)whiteCount) * w2;
+        int64_t part3 = additionalMoveCount * w3;
+        int64_t part4 = caputured * w4;
+
+        return part1 + part2 + part3 + part4;
+    }
+    else
+    {
+        int64_t w1 = HeuristicData::w11;
+        int64_t w2 = HeuristicData::w12;
+        int64_t w3 = HeuristicData::w13;
+        int64_t w4 = HeuristicData::w14;
+        int64_t part1 = ((int64_t)bowls[13]->GetCount() - (int64_t)bowls[6]->GetCount()) * w1;
+        int64_t part2 = ((int64_t)whiteCount - (int64_t)blackCount) * w2;
+        int64_t part3 = additionalMoveCount * w3;
+        int64_t part4 = caputured * w4;
+
+        return part1 + part2 + part3 + part4;
     }
 }
 
