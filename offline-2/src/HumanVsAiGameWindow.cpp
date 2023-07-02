@@ -10,8 +10,11 @@ HumanVsAiGameWindow::HumanVsAiGameWindow() : Window()
 
 void HumanVsAiGameWindow::ProcessInput()
 {
-    State *toDelete = state;
-    state = state->Execute();
+    while(state)
+    {
+        State *toDelete = state;
+        state = state->Execute();
 
-    delete toDelete;
+        delete toDelete;
+    }
 }

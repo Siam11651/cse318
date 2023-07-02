@@ -13,6 +13,22 @@ State *AiState::Execute()
 {
     mancalaState->Print();
 
+    Player winner;
+
+    if(mancalaState->WinnerDecided(winner))
+    {
+        if(winner == Player::BLACK)
+        {
+            std::cout << "Black won" << std::endl;
+        }
+        else
+        {
+            std::cout << "White won" << std::endl;
+        }
+
+        return nullptr;
+    }
+
     Player nextPlayer;
 
     if(player == Player::BLACK)

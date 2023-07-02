@@ -51,6 +51,45 @@ Bowl *MancalaState::GetBowl(const size_t &bowlIndex) const
     return bowls[bowlIndex];
 }
 
+bool MancalaState::WinnerDecided(Player &player) const
+{
+    bool allZero = true;
+
+    for(size_t i = 0; allZero && i < 6; ++i)
+    {
+        if(bowls[i]->GetCount() > 0)
+        {
+            allZero = false;
+        }
+    }
+
+    for(size_t i = 7; allZero && i < 13; ++i)
+    {
+        if(bowls[i]->GetCount() > 0)
+        {
+            allZero = false;
+        }
+    }
+
+    if(allZero)
+    {
+        if(bowls[6]->GetCount() > bowls[13]->GetCount())
+        {
+            player = Player::BLACK;
+        }
+        else
+        {
+            player = Player::WHITE;
+        }
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 bool MancalaState::MakeMove(const Player &player, const size_t &index)
 {
     size_t actualIndex;
