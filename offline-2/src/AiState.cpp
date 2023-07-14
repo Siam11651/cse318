@@ -13,6 +13,8 @@ State *AiState::Execute()
 {
     mancalaState->Print();
 
+    std::cout << std::endl;
+
     Player winner;
 
     if(mancalaState->WinnerDecided(winner))
@@ -69,7 +71,7 @@ State *AiState::Execute()
     {
         if(versusHuman)
         {
-            return new HumanState(mancalaState);
+            return new HumanState(false, nextPlayer, mancalaState);
         }
         else
         {

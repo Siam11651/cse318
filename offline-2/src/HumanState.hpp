@@ -4,7 +4,11 @@
 
 class HumanState : public State
 {
+private:
+    bool versusHuman;
+    Player player;
+
 public:
-    HumanState(MancalaState *MancalaState);
+    HumanState(const bool &versusHuman, const Player &player, MancalaState *MancalaState);
     State *Execute();
 };

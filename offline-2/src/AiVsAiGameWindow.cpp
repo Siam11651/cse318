@@ -1,6 +1,8 @@
 #include "AiVsAiGameWindow.hpp"
 #include "AiVsAiStartState.hpp"
 
+extern Window *currentWindow;
+
 AiVsAiGameWindow::AiVsAiGameWindow() : Window()
 {
     MancalaState *mancalaState = new MancalaState();
@@ -16,4 +18,6 @@ void AiVsAiGameWindow::ProcessInput()
 
         delete toDelete;
     }
+
+    currentWindow = nullptr;
 }

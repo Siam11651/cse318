@@ -1,16 +1,16 @@
-#include "HumanVsAiGameWindow.hpp"
+#include "HumanVsHumanGameWindow.hpp"
 #include "MancalaState.hpp"
-#include "HumanVsAiStartState.hpp"
+#include "HumanVsHumanStartState.hpp"
 
 extern Window *currentWindow;
 
-HumanVsAiGameWindow::HumanVsAiGameWindow() : Window()
+HumanVsHumanGameWindow::HumanVsHumanGameWindow() : Window()
 {
     MancalaState *mancalaState = new MancalaState();
-    state = new HumanVsAiStartState(mancalaState);
+    state = new HumanVsHumanStartState(mancalaState);
 }
 
-void HumanVsAiGameWindow::ProcessInput()
+void HumanVsHumanGameWindow::ProcessInput()
 {
     while(state)
     {

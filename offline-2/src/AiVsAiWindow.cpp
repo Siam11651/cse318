@@ -20,7 +20,7 @@ void AiVsAiWindow::ProcessInput()
     std::cout << "[3] Heuristic 3" << std::endl;
     std::cout << "[4] Heuristic 4" << std::endl;
 
-    uint8_t heuristic1, heuristic2;
+    uint16_t heuristic1, heuristic2;
 
     std::cin >> heuristic1 >> heuristic1;
 

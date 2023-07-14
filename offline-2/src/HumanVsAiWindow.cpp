@@ -20,7 +20,7 @@ void HumanVsAiWindow::ProcessInput()
     std::cout << "[3] Heuristic 3" << std::endl;
     std::cout << "[4] Heuristic 4" << std::endl;
 
-    uint8_t heuristic;
+    uint16_t heuristic;
 
     std::cin >> heuristic;
     

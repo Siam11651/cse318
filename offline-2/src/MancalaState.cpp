@@ -53,25 +53,25 @@ Bowl *MancalaState::GetBowl(const size_t &bowlIndex) const
 
 bool MancalaState::WinnerDecided(Player &player) const
 {
-    bool allZero = true;
+    bool allZeroBlack = true, allZeroWhite = true;
 
-    for(size_t i = 0; allZero && i < 6; ++i)
+    for(size_t i = 0; allZeroBlack && i < 6; ++i)
     {
         if(bowls[i]->GetCount() > 0)
         {
-            allZero = false;
+            allZeroBlack = false;
         }
     }
 
-    for(size_t i = 7; allZero && i < 13; ++i)
+    for(size_t i = 7; allZeroWhite && i < 13; ++i)
     {
         if(bowls[i]->GetCount() > 0)
         {
-            allZero = false;
+            allZeroWhite = false;
         }
     }
 
-    if(allZero)
+    if(allZeroBlack || allZeroWhite)
     {
         if(bowls[6]->GetCount() > bowls[13]->GetCount())
         {
@@ -108,7 +108,7 @@ bool MancalaState::MakeMove(const Player &player, const size_t &index)
     bowls[actualIndex]->SetCount(0);
 
     ++actualIndex;
-    bool moveAgain, couldMove = false;
+    bool moveAgain = false, couldMove = false;
     size_t lastBowlPreviousCount = hand;
 
     while(hand > 0)
@@ -119,17 +119,27 @@ bool MancalaState::MakeMove(const Player &player, const size_t &index)
         ++actualIndex;
     }
 
-    if(couldMove && !moveAgain && lastBowlPreviousCount == 0)
-    {
-        --actualIndex;
+    --actualIndex;
+    bool inMyTerritory = false;
 
+    if((actualIndex % 14) < 7 && player == Player::BLACK)
+    {
+        inMyTerritory = true;
+    }
+    else if((actualIndex % 14) > 6 && player == Player::WHITE)
+    {
+        inMyTerritory = true;
+    }
+
+    if(inMyTerritory && couldMove && !moveAgain && lastBowlPreviousCount == 0 && bowls[12 - (actualIndex % 14)]->GetCount() > 0)
+    {
         if(player == Player::BLACK)
         {
             bowls[6]->SetCount(bowls[6]->GetCount() + bowls[actualIndex % 14]->GetCount() + bowls[12 - (actualIndex % 14)]->GetCount());
         }
         else
         {
-            bowls[13]->SetCount(bowls[6]->GetCount() + bowls[actualIndex % 14]->GetCount() + bowls[12 - (actualIndex % 14)]->GetCount());
+            bowls[13]->SetCount(bowls[13]->GetCount() + bowls[actualIndex % 14]->GetCount() + bowls[12 - (actualIndex % 14)]->GetCount());
         }
 
         bowls[actualIndex % 14]->SetCount(0);

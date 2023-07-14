@@ -8,6 +8,7 @@ class AiVsAiGameWindow : public Window
 {
 private:
     State *state;
+    
 public:
     AiVsAiGameWindow();
     void ProcessInput();

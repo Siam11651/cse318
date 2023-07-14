@@ -18,7 +18,7 @@ State *HumanVsAiStartState::Execute()
 
     if(c == 'y' || c == 'Y')
     {
-        return new HumanState(mancalaState);
+        return new HumanState(false, Player::BLACK, mancalaState);
     }
     else if(c == 'n' || c == 'N')
     {

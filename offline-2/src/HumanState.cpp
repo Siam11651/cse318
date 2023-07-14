@@ -2,14 +2,17 @@
 #include "HumanState.hpp"
 #include "AiState.hpp"
 
-HumanState::HumanState(MancalaState *mancalaState) : State(mancalaState)
+HumanState::HumanState(const bool &versusHuman, const Player &player, MancalaState *mancalaState) : State(mancalaState)
 {
-
+    this->versusHuman = versusHuman;
+    this->player = player;
 }
 
 State *HumanState::Execute()
 {
     mancalaState->Print();
+
+    std::cout << std::endl;
 
     Player winner;
 
@@ -27,19 +30,40 @@ State *HumanState::Execute()
         return nullptr;
     }
 
-    std::cout << "Human to move" << std::endl;
-    std::cout << "Next move:" << std::endl;
+    Player nextPlayer;
+
+    if(player == Player::BLACK)
+    {
+        std::cout << "Black to move" << std::endl;
+
+        nextPlayer = Player::WHITE;
+    }
+    else
+    {
+        std::cout << "White to move" << std::endl;
+
+        nextPlayer = Player::BLACK;
+    }
+
+    std::cout << "Input next move:" << std::endl;
 
     uint16_t move;
 
     std::cin >> move;
 
-    if(mancalaState->MakeMove(Player::BLACK, move))
+    if(mancalaState->MakeMove(player, move))
     {
-        return new HumanState(mancalaState);
+        return new HumanState(true, player, mancalaState);
     }
     else
     {
-        return new AiState(true, Player::WHITE, mancalaState);
+        if(versusHuman)
+        {
+            return new HumanState(true, nextPlayer, mancalaState);
+        }
+        else
+        {
+            return new AiState(true, nextPlayer, mancalaState);
+        }
     }
 }
