@@ -61,7 +61,7 @@ State *AiState::Execute()
         heuristic = HeuristicData::heuristic2;
     }
 
-    size_t bestMove = mancalaState->GetBestMove(player, heuristic, 2);
+    size_t bestMove = mancalaState->GetBestMove(player, heuristic, 5);
 
     if(mancalaState->MakeMove(player, bestMove))
     {

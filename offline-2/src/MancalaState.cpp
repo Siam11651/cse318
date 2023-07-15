@@ -71,6 +71,21 @@ bool MancalaState::WinnerDecided(Player &player) const
         }
     }
 
+    if(allZeroBlack)
+    {
+        for(size_t i = 7; i < 13; ++i)
+        {
+            bowls[i]->SetCount(bowls[i]->GetCount() + bowls[13]->GetCount());
+        }
+    }
+    else if(allZeroWhite)
+    {
+        for(size_t i = 0; i < 6; ++i)
+        {
+            bowls[i]->SetCount(bowls[i]->GetCount() + bowls[13]->GetCount());
+        }
+    }
+
     if(allZeroBlack || allZeroWhite)
     {
         if(bowls[6]->GetCount() > bowls[13]->GetCount())
@@ -96,7 +111,7 @@ bool MancalaState::MakeMove(const Player &player, const size_t &index)
 
     if(player == Player::BLACK)
     {
-        actualIndex = 6 - index;
+        actualIndex = index - 1;
     }
     else
     {
@@ -185,7 +200,7 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
 
             int64_t heuristic = newMancalaState->GetHeuristic(player, nextPlayer, heuristicType, depth - 1, alpha, beta);
 
-            if(heuristic > maxHeuristic)
+            if(heuristic >= maxHeuristic)
             {
                 maxHeuristic = heuristic;
                 index = i;
@@ -233,7 +248,7 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
 
             int64_t heuristic = newMancalaState->GetHeuristic(player, nextPlayer, heuristicType, depth - 1, alpha, beta);
 
-            if(heuristic < minHeuristic)
+            if(heuristic <= minHeuristic)
             {
                 minHeuristic = heuristic;
                 index = i;
@@ -252,14 +267,16 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
         }
     }
 
-    if(player == Player::BLACK)
-    {
-        index = 6 - index;
-    }
-    else
-    {
-        ++index;
-    }
+    ++index;
+
+    // if(player == Player::BLACK)
+    // {
+    //     index = 6 - index;
+    // }
+    // else
+    // {
+    //     ++index;
+    // }
 
     return index;
 }
@@ -374,14 +391,16 @@ int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &p
 
 int64_t MancalaState::Heuristic1(const Player &player) const
 {
-    if(player == Player::BLACK)
-    {
-        return (int64_t)bowls[13]->GetCount() - (int64_t)bowls[6]->GetCount();
-    }
-    else
-    {
-        return (int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount();
-    }
+    return (int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount();
+
+    // if(player == Player::BLACK)
+    // {
+    //     return (int64_t)bowls[13]->GetCount() - (int64_t)bowls[6]->GetCount();
+    // }
+    // else
+    // {
+    //     return (int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount();
+    // }
 }
 
 int64_t MancalaState::Heuristic2(const Player &player) const
