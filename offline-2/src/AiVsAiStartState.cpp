@@ -13,7 +13,7 @@ State *AiVsAiStartState::Execute()
     std::cout << "[1] Black" << std::endl;
     std::cout << "[2] White" << std::endl;
 
-    uint8_t option;
+    uint16_t option;
 
     std::cin >> option;
 

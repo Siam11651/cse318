@@ -22,15 +22,15 @@ void AiVsAiWindow::ProcessInput()
 
     uint16_t heuristic1, heuristic2;
 
-    std::cin >> heuristic1 >> heuristic1;
+    std::cin >> heuristic1 >> heuristic2;
 
-    std::cout << "Insert values of w1, w2, w2 and w4 for AI-1 seperated by whitespaces:" << std::endl;
+    std::cout << "Insert values of w1, w2, w3 and w4 for AI-1 seperated by whitespaces:" << std::endl;
 
     uint64_t w11, w12, w13, w14;
 
     std::cin >> w11 >> w12 >> w13 >> w14;
 
-    std::cout << "Insert values of w1, w2, w2 and w4 for AI-2 seperated by whitespaces:" << std::endl;
+    std::cout << "Insert values of w1, w2, w3 and w4 for AI-2 seperated by whitespaces:" << std::endl;
 
     uint64_t w21, w22, w23, w24;
 

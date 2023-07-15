@@ -248,7 +248,14 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
         }
     }
 
-    ++index;
+    if(player == Player::BLACK)
+    {
+        index = 6 - index;
+    }
+    else
+    {
+        ++index;
+    }
 
     return index;
 }
