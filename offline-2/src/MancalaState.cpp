@@ -392,15 +392,6 @@ int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &p
 int64_t MancalaState::Heuristic1(const Player &player) const
 {
     return (int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount();
-
-    // if(player == Player::BLACK)
-    // {
-    //     return (int64_t)bowls[13]->GetCount() - (int64_t)bowls[6]->GetCount();
-    // }
-    // else
-    // {
-    //     return (int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount();
-    // }
 }
 
 int64_t MancalaState::Heuristic2(const Player &player) const
@@ -414,24 +405,12 @@ int64_t MancalaState::Heuristic2(const Player &player) const
         whiteCount += bowls[12 - i]->GetCount();
     }
 
-    if(player == Player::BLACK)
-    {
-        int64_t w1 = HeuristicData::w21;
-        int64_t w2 = HeuristicData::w22;
-        int64_t part1 = ((int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount()) * w1;
-        int64_t part2 = ((int64_t)blackCount - (int64_t)whiteCount) * w2;
+    int64_t w1 = HeuristicData::w21;
+    int64_t w2 = HeuristicData::w22;
+    int64_t part1 = ((int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount()) * w1;
+    int64_t part2 = ((int64_t)blackCount - (int64_t)whiteCount) * w2;
 
-        return part1 + part2;
-    }
-    else
-    {
-        int64_t w1 = HeuristicData::w11;
-        int64_t w2 = HeuristicData::w12;
-        int64_t part1 = ((int64_t)bowls[13]->GetCount() - (int64_t)bowls[6]->GetCount()) * w1;
-        int64_t part2 = ((int64_t)whiteCount - (int64_t)blackCount) * w2;
-
-        return part1 + part2;
-    }
+    return part1 + part2;
 }
 
 int64_t MancalaState::Heuristic3(const Player &player) const
@@ -445,28 +424,14 @@ int64_t MancalaState::Heuristic3(const Player &player) const
         whiteCount += bowls[12 - i]->GetCount();
     }
 
-    if(player == Player::BLACK)
-    {
-        int64_t w1 = HeuristicData::w21;
-        int64_t w2 = HeuristicData::w22;
-        int64_t w3 = HeuristicData::w23;
-        int64_t part1 = ((int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount()) * w1;
-        int64_t part2 = ((int64_t)blackCount - (int64_t)whiteCount) * w2;
-        int64_t part3 = additionalMoveCount * w3;
+    int64_t w1 = HeuristicData::w21;
+    int64_t w2 = HeuristicData::w22;
+    int64_t w3 = HeuristicData::w23;
+    int64_t part1 = ((int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount()) * w1;
+    int64_t part2 = ((int64_t)blackCount - (int64_t)whiteCount) * w2;
+    int64_t part3 = additionalMoveCount * w3;
 
-        return part1 + part2 + part3;
-    }
-    else
-    {
-        int64_t w1 = HeuristicData::w11;
-        int64_t w2 = HeuristicData::w12;
-        int64_t w3 = HeuristicData::w13;
-        int64_t part1 = ((int64_t)bowls[13]->GetCount() - (int64_t)bowls[6]->GetCount()) * w1;
-        int64_t part2 = ((int64_t)whiteCount - (int64_t)blackCount) * w2;
-        int64_t part3 = additionalMoveCount * w3;
-
-        return part1 + part2 + part3;
-    }
+    return part1 + part2 + part3;
 }
 
 int64_t MancalaState::Heuristic4(const Player &player) const
@@ -480,32 +445,16 @@ int64_t MancalaState::Heuristic4(const Player &player) const
         whiteCount += bowls[12 - i]->GetCount();
     }
 
-    if(player == Player::BLACK)
-    {
-        int64_t w1 = HeuristicData::w21;
-        int64_t w2 = HeuristicData::w22;
-        int64_t w3 = HeuristicData::w23;
-        int64_t w4 = HeuristicData::w24;
-        int64_t part1 = ((int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount()) * w1;
-        int64_t part2 = ((int64_t)blackCount - (int64_t)whiteCount) * w2;
-        int64_t part3 = additionalMoveCount * w3;
-        int64_t part4 = caputured * w4;
+    int64_t w1 = HeuristicData::w21;
+    int64_t w2 = HeuristicData::w22;
+    int64_t w3 = HeuristicData::w23;
+    int64_t w4 = HeuristicData::w24;
+    int64_t part1 = ((int64_t)bowls[6]->GetCount() - (int64_t)bowls[13]->GetCount()) * w1;
+    int64_t part2 = ((int64_t)blackCount - (int64_t)whiteCount) * w2;
+    int64_t part3 = additionalMoveCount * w3;
+    int64_t part4 = caputured * w4;
 
-        return part1 + part2 + part3 + part4;
-    }
-    else
-    {
-        int64_t w1 = HeuristicData::w11;
-        int64_t w2 = HeuristicData::w12;
-        int64_t w3 = HeuristicData::w13;
-        int64_t w4 = HeuristicData::w14;
-        int64_t part1 = ((int64_t)bowls[13]->GetCount() - (int64_t)bowls[6]->GetCount()) * w1;
-        int64_t part2 = ((int64_t)whiteCount - (int64_t)blackCount) * w2;
-        int64_t part3 = additionalMoveCount * w3;
-        int64_t part4 = caputured * w4;
-
-        return part1 + part2 + part3 + part4;
-    }
+    return part1 + part2 + part3 + part4;
 }
 
 void MancalaState::Print() const
