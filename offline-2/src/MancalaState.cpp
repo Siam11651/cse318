@@ -75,14 +75,15 @@ bool MancalaState::WinnerDecided(Player &player) const
     {
         for(size_t i = 7; i < 13; ++i)
         {
-            bowls[i]->SetCount(bowls[i]->GetCount() + bowls[13]->GetCount());
+            bowls[13]->SetCount(bowls[i]->GetCount() + bowls[13]->GetCount());
         }
     }
-    else if(allZeroWhite)
+    
+    if(allZeroWhite)
     {
         for(size_t i = 0; i < 6; ++i)
         {
-            bowls[i]->SetCount(bowls[i]->GetCount() + bowls[13]->GetCount());
+            bowls[6]->SetCount(bowls[i]->GetCount() + bowls[6]->GetCount());
         }
     }
 
@@ -209,12 +210,12 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
             maxHeuristic = std::max(maxHeuristic, heuristic);
             alpha = std::max(alpha, heuristic);
 
-            if(alpha >= beta)
-            {
-                delete newMancalaState;
+            // if(alpha >= beta)
+            // {
+            //     delete newMancalaState;
 
-                break;
-            }
+            //     break;
+            // }
 
             delete newMancalaState;
         }
@@ -256,12 +257,12 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
 
             beta = std::min(beta, heuristic);
 
-            if(alpha >= beta)
-            {
-                delete newMancalaState;
+            // if(alpha >= beta)
+            // {
+            //     delete newMancalaState;
 
-                break;
-            }
+            //     break;
+            // }
 
             delete newMancalaState;
         }
@@ -324,12 +325,12 @@ int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &p
                 maxHeuristic = std::max(maxHeuristic, heuristic);
                 alpha = std::max(alpha, heuristic);
 
-                if(alpha >= beta)
-                {
-                    delete newMancalaState;
+                // if(alpha >= beta)
+                // {
+                //     delete newMancalaState;
 
-                    break;
-                }
+                //     break;
+                // }
 
                 delete newMancalaState;
             }
@@ -365,12 +366,12 @@ int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &p
                 minHeuristic = std::min(minHeuristic, heuristic);
                 beta = std::min(beta, heuristic);
 
-                if(alpha >= beta)
-                {
-                    delete newMancalaState;
+                // if(alpha >= beta)
+                // {
+                //     delete newMancalaState;
 
-                    break;
-                }
+                //     break;
+                // }
 
                 delete newMancalaState;
             }
