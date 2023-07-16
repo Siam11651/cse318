@@ -51,7 +51,7 @@ Bowl *MancalaState::GetBowl(const size_t &bowlIndex) const
     return bowls[bowlIndex];
 }
 
-bool MancalaState::WinnerDecided(Player &player) const
+bool MancalaState::WinnerDecided(WinnerPlayer &player) const
 {
     bool allZeroBlack = true, allZeroWhite = true;
 
@@ -91,11 +91,15 @@ bool MancalaState::WinnerDecided(Player &player) const
     {
         if(bowls[6]->GetCount() > bowls[13]->GetCount())
         {
-            player = Player::BLACK;
+            player = WinnerPlayer::BLACK;
+        }
+        else if(bowls[6]->GetCount() < bowls[13]->GetCount())
+        {
+            player = WinnerPlayer::WHITE;
         }
         else
         {
-            player = Player::WHITE;
+            player = WinnerPlayer::NONE;
         }
 
         return true;
@@ -275,7 +279,7 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
 
 int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &player, const size_t &heuristicType, const size_t &depth, int64_t alpha, int64_t beta)
 {
-    Player winner;
+    WinnerPlayer winner;
 
     if(depth == 0 || WinnerDecided(winner))
     {
