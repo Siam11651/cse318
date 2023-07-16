@@ -61,7 +61,18 @@ State *AiState::Execute()
         heuristic = HeuristicData::heuristic2;
     }
 
-    size_t bestMove = mancalaState->GetBestMove(player, heuristic, 2);
+    size_t depth;
+
+    if(player == Player::BLACK)
+    {
+        depth = HeuristicData::depth1;
+    }
+    else
+    {
+        depth = HeuristicData::depth2;
+    }
+
+    size_t bestMove = mancalaState->GetBestMove(player, heuristic, depth);
 
     if(mancalaState->MakeMove(player, bestMove))
     {

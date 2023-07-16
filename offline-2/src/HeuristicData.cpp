@@ -10,3 +10,5 @@ int64_t HeuristicData::w21 = 0;
 int64_t HeuristicData::w22 = 0;
 int64_t HeuristicData::w23 = 0;
 int64_t HeuristicData::w24 = 0;
+size_t HeuristicData::depth1 = 1;
+size_t HeuristicData::depth2 = 1;

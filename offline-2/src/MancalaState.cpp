@@ -201,7 +201,7 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
 
             int64_t heuristic = newMancalaState->GetHeuristic(player, nextPlayer, heuristicType, depth - 1, alpha, beta);
 
-            if(heuristic >= maxHeuristic)
+            if(heuristic > maxHeuristic)
             {
                 maxHeuristic = heuristic;
                 index = i;
@@ -210,12 +210,12 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
             maxHeuristic = std::max(maxHeuristic, heuristic);
             alpha = std::max(alpha, heuristic);
 
-            // if(alpha >= beta)
-            // {
-            //     delete newMancalaState;
+            if(alpha >= beta)
+            {
+                delete newMancalaState;
 
-            //     break;
-            // }
+                break;
+            }
 
             delete newMancalaState;
         }
@@ -249,7 +249,7 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
 
             int64_t heuristic = newMancalaState->GetHeuristic(player, nextPlayer, heuristicType, depth - 1, alpha, beta);
 
-            if(heuristic <= minHeuristic)
+            if(heuristic < minHeuristic)
             {
                 minHeuristic = heuristic;
                 index = i;
@@ -257,12 +257,12 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
 
             beta = std::min(beta, heuristic);
 
-            // if(alpha >= beta)
-            // {
-            //     delete newMancalaState;
+            if(alpha >= beta)
+            {
+                delete newMancalaState;
 
-            //     break;
-            // }
+                break;
+            }
 
             delete newMancalaState;
         }
@@ -273,9 +273,11 @@ size_t MancalaState::GetBestMove(const Player &player, const size_t &heuristicTy
     return index;
 }
 
-int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &player, const size_t &heuristicType, const size_t &depth, int64_t &alpha, int64_t &beta)
+int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &player, const size_t &heuristicType, const size_t &depth, int64_t alpha, int64_t beta)
 {
-    if(depth == 0)
+    Player winner;
+
+    if(depth == 0 || WinnerDecided(winner))
     {
         if(heuristicType == 1)
         {
@@ -306,6 +308,8 @@ int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &p
 
                 if(newMancalaState->GetBowl(i)->GetCount() == 0)
                 {
+                    delete newMancalaState;
+
                     continue;
                 }
 
@@ -325,12 +329,12 @@ int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &p
                 maxHeuristic = std::max(maxHeuristic, heuristic);
                 alpha = std::max(alpha, heuristic);
 
-                // if(alpha >= beta)
-                // {
-                //     delete newMancalaState;
+                if(alpha >= beta)
+                {
+                    delete newMancalaState;
 
-                //     break;
-                // }
+                    break;
+                }
 
                 delete newMancalaState;
             }
@@ -347,6 +351,8 @@ int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &p
 
                 if(newMancalaState->GetBowl(i + 7)->GetCount() == 0)
                 {
+                    delete newMancalaState;
+
                     continue;
                 }
 
@@ -366,12 +372,12 @@ int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &p
                 minHeuristic = std::min(minHeuristic, heuristic);
                 beta = std::min(beta, heuristic);
 
-                // if(alpha >= beta)
-                // {
-                //     delete newMancalaState;
+                if(alpha >= beta)
+                {
+                    delete newMancalaState;
 
-                //     break;
-                // }
+                    break;
+                }
 
                 delete newMancalaState;
             }
