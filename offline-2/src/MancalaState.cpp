@@ -302,7 +302,7 @@ int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &p
         {
             int64_t maxHeuristic = INT64_MIN;
 
-            for(size_t i = 0; i < 6; ++i)
+            for(int64_t i = 5; i >= 0; --i)
             {
                 MancalaState *newMancalaState = new MancalaState(*this);
 
@@ -345,7 +345,7 @@ int64_t MancalaState::GetHeuristic(const Player &previousPlayer, const Player &p
         {
             int64_t minHeuristic = INT64_MAX;
 
-            for(size_t i = 0; i < 6; ++i)
+            for(int64_t i = 5; i >= 0; --i)
             {
                 MancalaState *newMancalaState = new MancalaState(*this);
 

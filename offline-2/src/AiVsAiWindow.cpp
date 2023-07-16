@@ -48,6 +48,8 @@ void AiVsAiWindow::ProcessInput()
     HeuristicData::w22 = w22;
     HeuristicData::w23 = w23;
     HeuristicData::w24 = w24;
+    HeuristicData::depth1 = depth1;
+    HeuristicData::depth2 = depth2;
 
     currentWindow = aiVsAiGameWindow;
 }
