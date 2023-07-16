@@ -14,17 +14,21 @@ State *HumanState::Execute()
 
     std::cout << std::endl;
 
-    Player winner;
+    WinnerPlayer winner;
 
     if(mancalaState->WinnerDecided(winner))
     {
-        if(winner == Player::BLACK)
+        if(winner == WinnerPlayer::BLACK)
         {
             std::cout << "Black won" << std::endl;
         }
-        else
+        else if(winner == WinnerPlayer::BLACK)
         {
             std::cout << "White won" << std::endl;
+        }
+        else
+        {
+            std::cout << "Draw" << std::endl;
         }
 
         return nullptr;

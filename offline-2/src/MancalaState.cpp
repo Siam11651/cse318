@@ -462,16 +462,25 @@ int64_t MancalaState::Heuristic4(const Player &player) const
 void MancalaState::Print() const
 {
     std::cout << "White" << std::endl;
+    std::cout << "\t";
     
-    for(size_t i = 13; i > 6; --i)
+    for(size_t i = 12; i > 6; --i)
     {
         std::cout << bowls[i]->GetCount() << "\t";
     }
 
     std::cout << std::endl;
+    std::cout << bowls[13]->GetCount() << "\t";
+
+    for(size_t i = 0; i < 6; ++i)
+    {
+        std::cout << "\t";
+    }
+
+    std::cout << bowls[13]->GetCount() << std::endl;
     std::cout << "\t";
 
-    for(size_t i = 0; i < 7; ++i)
+    for(size_t i = 0; i < 6; ++i)
     {
         std::cout << bowls[i]->GetCount() << "\t";
     }
