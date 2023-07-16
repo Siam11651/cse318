@@ -4,15 +4,12 @@
 #include "AiVsAiGameWindow.hpp"
 #include "HeuristicData.hpp"
 
-extern Window *currentWindow;
-extern AiVsAiGameWindow *aiVsAiGameWindow;
-
 AiVsAiWindow::AiVsAiWindow() : Window()
 {
 
 }
 
-void AiVsAiWindow::ProcessInput()
+Window *AiVsAiWindow::ProcessInput()
 {
     std::cout << "Select heuristic of AI-1 and AI-2 seperated by whitespace:" << std::endl;
     std::cout << "[1] Heuristic 1" << std::endl;
@@ -51,5 +48,5 @@ void AiVsAiWindow::ProcessInput()
     HeuristicData::depth1 = depth1;
     HeuristicData::depth2 = depth2;
 
-    currentWindow = aiVsAiGameWindow;
+    return new AiVsAiGameWindow();
 }

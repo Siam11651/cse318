@@ -24,3 +24,8 @@ bool BigBowl::TakePebble(const Player &player, size_t &hand)
         return false;;
     }
 }
+
+BigBowl::~BigBowl()
+{
+    
+}

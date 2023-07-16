@@ -31,6 +31,8 @@ State *HumanState::Execute()
             std::cout << "Draw" << std::endl;
         }
 
+        delete mancalaState;
+
         return nullptr;
     }
 

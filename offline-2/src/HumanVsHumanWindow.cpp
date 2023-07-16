@@ -2,15 +2,12 @@
 #include "HumanVsHumanWindow.hpp"
 #include "HumanVsHumanGameWindow.hpp"
 
-extern Window *currentWindow;
-extern HumanVsHumanGameWindow *humanVsHumanGameWindow;
-
 HumanVsHumanWindow::HumanVsHumanWindow() : Window()
 {
 
 }
 
-void HumanVsHumanWindow::ProcessInput()
+Window *HumanVsHumanWindow::ProcessInput()
 {
-    currentWindow = humanVsHumanGameWindow;
+    return new HumanVsHumanGameWindow();
 }

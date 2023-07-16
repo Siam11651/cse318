@@ -6,5 +6,5 @@ class AiVsAiWindow : public Window
 {
 public:
     AiVsAiWindow();
-    void ProcessInput();
+    Window *ProcessInput();
 };

@@ -2,15 +2,13 @@
 #include "MancalaState.hpp"
 #include "HumanVsAiStartState.hpp"
 
-extern Window *currentWindow;
-
 HumanVsAiGameWindow::HumanVsAiGameWindow() : Window()
 {
     MancalaState *mancalaState = new MancalaState();
     state = new HumanVsAiStartState(mancalaState);
 }
 
-void HumanVsAiGameWindow::ProcessInput()
+Window *HumanVsAiGameWindow::ProcessInput()
 {
     while(state)
     {
@@ -20,5 +18,5 @@ void HumanVsAiGameWindow::ProcessInput()
         delete toDelete;
     }
 
-    currentWindow = nullptr;
+    return nullptr;
 }

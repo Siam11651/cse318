@@ -29,3 +29,8 @@ bool Bowl::TakePebble(const Player &player, size_t &hand)
 
     return false;
 }
+
+Bowl::~Bowl()
+{
+    
+}

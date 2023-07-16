@@ -10,7 +10,7 @@ HumanVsHumanGameWindow::HumanVsHumanGameWindow() : Window()
     state = new HumanVsHumanStartState(mancalaState);
 }
 
-void HumanVsHumanGameWindow::ProcessInput()
+Window *HumanVsHumanGameWindow::ProcessInput()
 {
     while(state)
     {
@@ -20,5 +20,5 @@ void HumanVsHumanGameWindow::ProcessInput()
         delete toDelete;
     }
 
-    currentWindow = nullptr;
+    return nullptr;
 }

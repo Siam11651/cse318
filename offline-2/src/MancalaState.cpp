@@ -491,5 +491,8 @@ void MancalaState::Print() const
 
 MancalaState::~MancalaState()
 {
-    
+    for(size_t i = 0; i < bowls.size(); ++i)
+    {
+        delete bowls[i];
+    }
 }

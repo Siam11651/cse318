@@ -9,7 +9,7 @@ AiVsAiGameWindow::AiVsAiGameWindow() : Window()
     state = new AiVsAiStartState(mancalaState);
 }
 
-void AiVsAiGameWindow::ProcessInput()
+Window *AiVsAiGameWindow::ProcessInput()
 {
     while(state)
     {
@@ -19,5 +19,5 @@ void AiVsAiGameWindow::ProcessInput()
         delete toDelete;
     }
 
-    currentWindow = nullptr;
+    return nullptr;
 }

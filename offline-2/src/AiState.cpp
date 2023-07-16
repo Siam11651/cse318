@@ -32,6 +32,8 @@ State *AiState::Execute()
             std::cout << "Draw" << std::endl;
         }
 
+        delete mancalaState;
+
         return nullptr;
     }
 

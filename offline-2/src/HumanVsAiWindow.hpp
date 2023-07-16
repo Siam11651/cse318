@@ -6,5 +6,5 @@ class HumanVsAiWindow : public Window
 {
 public:
     HumanVsAiWindow();
-    void ProcessInput();
+    Window *ProcessInput();
 };

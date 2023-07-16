@@ -10,5 +10,5 @@ private:
 
 public:
     HumanVsHumanGameWindow();
-    void ProcessInput();
+    Window *ProcessInput();
 };

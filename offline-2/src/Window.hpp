@@ -4,5 +4,5 @@ class Window
 {
 public:
     Window();
-    virtual void ProcessInput();
+    virtual Window *ProcessInput();
 };

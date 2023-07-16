@@ -5,16 +5,13 @@
 #include "HumanVsHumanWindow.hpp"
 
 extern Window *currentWindow;
-extern HumanVsAiWindow *humanVsAiWindow;
-extern AiVsAiWindow *aiVsAiWindow;
-extern HumanVsHumanWindow *humanVsHumanWindow;
 
 Window::Window()
 {
 
 }
 
-void Window::ProcessInput()
+Window *Window::ProcessInput()
 {
     std::cout << "Choose mode:" << std::endl;
     std::cout << "[1] Human vs AI" << std::endl;
@@ -27,18 +24,20 @@ void Window::ProcessInput()
 
     if(c == '1')
     {
-        currentWindow = humanVsAiWindow;
+        return new HumanVsAiWindow();
     }
     else if(c == '2')
     {
-        currentWindow = aiVsAiWindow;
+        return new AiVsAiWindow();
     }
     else if(c == '3')
     {
-        currentWindow = humanVsHumanWindow;
+        return new HumanVsHumanWindow();
     }
     else
     {
         std::cout << "Invalid input" << std::endl;
+
+        return new Window();
     }
 }

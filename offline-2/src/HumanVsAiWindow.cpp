@@ -4,15 +4,12 @@
 #include "HumanVsAiGameWindow.hpp"
 #include "HeuristicData.hpp"
 
-extern Window *currentWindow;
-extern HumanVsAiGameWindow *humanVsAiGameWindow;
-
 HumanVsAiWindow::HumanVsAiWindow() : Window()
 {
 
 }
 
-void HumanVsAiWindow::ProcessInput()
+Window *HumanVsAiWindow::ProcessInput()
 {
     std::cout << "Select AI heuristic:" << std::endl;
     std::cout << "[1] Heuristic 1" << std::endl;
@@ -36,5 +33,5 @@ void HumanVsAiWindow::ProcessInput()
     HeuristicData::w23 = w3;
     HeuristicData::w24 = w4;
 
-    currentWindow = humanVsAiGameWindow;
+    return new HumanVsAiGameWindow();
 }

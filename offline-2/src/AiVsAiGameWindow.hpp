@@ -11,5 +11,5 @@ private:
     
 public:
     AiVsAiGameWindow();
-    void ProcessInput();
+    Window *ProcessInput();
 };
