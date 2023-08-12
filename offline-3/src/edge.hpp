@@ -7,14 +7,14 @@ namespace offline_3
     class edge
     {
     private:
-        offline_3::vertex from;
-        offline_3::vertex to;
+        uint64_t from;
+        uint64_t to;
         int64_t weight;
 
     public:
-        edge(const offline_3::vertex &from, const offline_3::vertex &to, const int64_t &weight);
-        offline_3::vertex get_from() const;
-        offline_3::vertex get_to() const;
+        edge(const uint64_t &from, const uint64_t &to, const int64_t &weight);
+        uint64_t get_from() const;
+        uint64_t get_to() const;
         int64_t get_weight() const;
     };
 }

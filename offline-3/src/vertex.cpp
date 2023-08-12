@@ -2,14 +2,8 @@
 
 offline_3::vertex::vertex(const uint64_t &id)
 {
-    set_id(id);
-
-    adjacents = std::make_shared<std::map<offline_3::vertex, int64_t>>();
-}
-
-void offline_3::vertex::set_id(const uint64_t &id)
-{
     this->id = id;
+    adjacents = new std::map<uint64_t, int64_t>();
 }
 
 uint64_t offline_3::vertex::get_id() const
@@ -17,14 +11,14 @@ uint64_t offline_3::vertex::get_id() const
     return id;
 }
 
-void offline_3::vertex::insert_adjacent(const offline_3::vertex &vertex, const int64_t &weight) const
+void offline_3::vertex::insert_adjacent(const uint64_t &id, const int64_t &weight) const
 {
-    adjacents->insert({vertex, weight});
+    adjacents->insert({id, weight});
 }
 
 int64_t offline_3::vertex::get_weight(const uint64_t &id) const
 {
-    std::map<offline_3::vertex, int64_t>::iterator adjacent_iterator = adjacents->find(offline_3::vertex(id));
+    std::map<uint64_t, int64_t>::const_iterator adjacent_iterator = adjacents->find(id);
 
     if(adjacent_iterator == adjacents->end())
     {
@@ -34,12 +28,12 @@ int64_t offline_3::vertex::get_weight(const uint64_t &id) const
     return adjacent_iterator->second;
 }
 
-std::pair<offline_3::vertex, int64_t> offline_3::vertex::get_heaviest_adjacent() const
+std::pair<uint64_t, int64_t> offline_3::vertex::get_heaviest_adjacent() const
 {
     int64_t max_weight = INT64_MIN;
-    offline_3::vertex heaviest_adjacent = offline_3::vertex(0);
+    uint64_t heaviest_adjacent = 0;
 
-    for(std::map<offline_3::vertex, int64_t>::iterator iterator = adjacents->begin(); iterator != adjacents->end(); ++iterator)
+    for(std::map<uint64_t, int64_t>::const_iterator iterator = adjacents->begin(); iterator != adjacents->end(); ++iterator)
     {
         if(iterator->second > max_weight)
         {
@@ -51,12 +45,12 @@ std::pair<offline_3::vertex, int64_t> offline_3::vertex::get_heaviest_adjacent()
     return {heaviest_adjacent, max_weight};
 }
 
-std::pair<offline_3::vertex, int64_t> offline_3::vertex::get_lightest_adjacent() const
+std::pair<uint64_t, int64_t> offline_3::vertex::get_lightest_adjacent() const
 {
     int64_t min_weight = INT64_MAX;
-    offline_3::vertex lightest_adjacent = offline_3::vertex(0);
+    uint64_t lightest_adjacent = 0;
 
-    for(std::map<offline_3::vertex, int64_t>::iterator iterator = adjacents->begin(); iterator != adjacents->end(); ++iterator)
+    for(std::map<uint64_t, int64_t>::const_iterator iterator = adjacents->begin(); iterator != adjacents->end(); ++iterator)
     {
         if(iterator->second < min_weight)
         {
@@ -70,7 +64,7 @@ std::pair<offline_3::vertex, int64_t> offline_3::vertex::get_lightest_adjacent()
 
 bool offline_3::vertex::has_adjacent(const uint64_t &id) const
 {
-    if(adjacents->find(offline_3::vertex(id)) == adjacents->end())
+    if(adjacents->find(id) == adjacents->end())
     {
         return false;
     }
@@ -78,15 +72,15 @@ bool offline_3::vertex::has_adjacent(const uint64_t &id) const
     return true;
 }
 
-std::shared_ptr<std::vector<std::pair<offline_3::vertex, int64_t>>> offline_3::vertex::get_restricted_adjacent_list(const int64_t &mu) const
+std::vector<std::pair<uint64_t, int64_t>> offline_3::vertex::get_restricted_adjacent_list(const int64_t &mu) const
 {
-    std::shared_ptr<std::vector<std::pair<offline_3::vertex, int64_t>>> ral = std::make_shared<std::vector<std::pair<offline_3::vertex, int64_t>>>();
+    std::vector<std::pair<uint64_t, int64_t>> ral;
 
-    for(std::map<offline_3::vertex, int64_t>::iterator iterator = adjacents->begin(); iterator != adjacents->end(); ++iterator)
+    for(std::map<uint64_t, int64_t>::const_iterator iterator = adjacents->begin(); iterator != adjacents->end(); ++iterator)
     {
         if(iterator->second >= mu)
         {
-            ral->push_back(*iterator);
+            ral.push_back(*iterator);
         }
     }
 
@@ -96,4 +90,9 @@ std::shared_ptr<std::vector<std::pair<offline_3::vertex, int64_t>>> offline_3::v
 bool offline_3::vertex::operator < (const offline_3::vertex &other) const
 {
     return id < other.id;
+}
+
+offline_3::vertex::~vertex()
+{
+    delete adjacents;
 }

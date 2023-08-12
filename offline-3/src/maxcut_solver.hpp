@@ -5,12 +5,14 @@
 
 namespace offline_3
 {
+    typedef std::pair<std::set<uint64_t>, std::set<uint64_t>> maxcut;
+
     class maxcut_solver
     {
     public:
-        static std::pair<std::pair<std::shared_ptr<std::set<offline_3::vertex>>, std::shared_ptr<std::set<offline_3::vertex>>>, int64_t> get_maxcut(const offline_3::graph &graph);
-        static std::pair<std::shared_ptr<std::set<offline_3::vertex>>, std::shared_ptr<std::set<offline_3::vertex>>> get_semi_greedy_maxcut(const offline_3::graph &graph);
-        static std::pair<std::shared_ptr<std::set<offline_3::vertex>>, std::shared_ptr<std::set<offline_3::vertex>>> get_local_search_maxcut(const offline_3::graph &graph);
-        static int64_t get_cut_weight(const std::set<offline_3::vertex> &vertices_set1, const std::set<offline_3::vertex> &vertices_set2);
+        static offline_3::maxcut get_maxcut(const offline_3::graph &graph);
+        static offline_3::maxcut get_semi_greedy_maxcut(const offline_3::graph &graph);
+        static void local_search_optimization(const offline_3::graph &graph, std::set<uint64_t> &vertices_set1, std::set<uint64_t> &vertices_set2);
+        static int64_t get_cut_weight(const offline_3::graph &graph, const std::set<uint64_t> &vertices_set1, const std::set<uint64_t> &vertices_set2);
     };
 }
