@@ -12,6 +12,7 @@ offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &g
     while(true)
     {
         offline_3::maxcut cut = get_semi_greedy_maxcut(graph);
+        int64_t weight_before = get_cut_weight(graph, cut.first, cut.second);
 
         local_search_optimization(graph, cut.first, cut.second);
 
@@ -21,6 +22,11 @@ offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &g
         {
             max_weight = weight;
             maxcut = cut;
+        }
+
+        if(weight == weight_before)
+        {
+            break;
         }
     }
 
@@ -66,7 +72,7 @@ offline_3::maxcut offline_3::maxcut_solver::get_semi_greedy_maxcut(const offline
                 sigma_x[*iterator_subtracted] += graph.get_vertex(*iterator_subtracted).get_weight(*iterator_y);
             }
 
-            for(std::set<uint64_t>::iterator iterator_x = set_y.begin(); iterator_x != set_x.end(); ++iterator_x)
+            for(std::set<uint64_t>::iterator iterator_x = set_x.begin(); iterator_x != set_x.end(); ++iterator_x)
             {
                 sigma_y[*iterator_subtracted] += graph.get_vertex(*iterator_subtracted).get_weight(*iterator_x);
             }

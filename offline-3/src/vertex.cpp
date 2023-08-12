@@ -28,7 +28,7 @@ int64_t offline_3::vertex::get_weight(const uint64_t &id) const
     return adjacent_iterator->second;
 }
 
-std::pair<uint64_t, int64_t> offline_3::vertex::get_heaviest_adjacent() const
+offline_3::edge offline_3::vertex::get_heaviest_adjacent() const
 {
     int64_t max_weight = INT64_MIN;
     uint64_t heaviest_adjacent = 0;
@@ -42,10 +42,10 @@ std::pair<uint64_t, int64_t> offline_3::vertex::get_heaviest_adjacent() const
         }
     }
 
-    return {heaviest_adjacent, max_weight};
+    return offline_3::edge(id, heaviest_adjacent, max_weight);
 }
 
-std::pair<uint64_t, int64_t> offline_3::vertex::get_lightest_adjacent() const
+offline_3::edge offline_3::vertex::get_lightest_adjacent() const
 {
     int64_t min_weight = INT64_MAX;
     uint64_t lightest_adjacent = 0;
@@ -59,7 +59,7 @@ std::pair<uint64_t, int64_t> offline_3::vertex::get_lightest_adjacent() const
         }
     }
 
-    return {lightest_adjacent, min_weight};
+    return offline_3::edge(id, lightest_adjacent, min_weight);
 }
 
 bool offline_3::vertex::has_adjacent(const uint64_t &id) const
@@ -72,15 +72,15 @@ bool offline_3::vertex::has_adjacent(const uint64_t &id) const
     return true;
 }
 
-std::vector<std::pair<uint64_t, int64_t>> offline_3::vertex::get_restricted_adjacent_list(const int64_t &mu) const
+std::vector<offline_3::edge> offline_3::vertex::get_restricted_adjacent_list(const int64_t &mu) const
 {
-    std::vector<std::pair<uint64_t, int64_t>> ral;
+    std::vector<offline_3::edge> ral;
 
     for(std::map<uint64_t, int64_t>::const_iterator iterator = adjacents->begin(); iterator != adjacents->end(); ++iterator)
     {
         if(iterator->second >= mu)
         {
-            ral.push_back(*iterator);
+            ral.push_back(offline_3::edge(id, iterator->first, iterator->second));
         }
     }
 

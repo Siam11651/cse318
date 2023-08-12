@@ -57,40 +57,36 @@ offline_3::vertex offline_3::graph::get_vertex(const uint64_t &id) const
 
 offline_3::edge offline_3::graph::get_heaviest_edge() const
 {
-    int64_t max_weight = INT64_MIN;
-    std::pair<uint64_t, uint64_t> heaviest_edge = {0, 0};
+    offline_3::edge heaviest_edge(0, 0, INT16_MIN);
 
     for(std::set<offline_3::vertex>::iterator iterator = vertices.begin(); iterator != vertices.end(); ++iterator)
     {
-        std::pair<uint64_t, int64_t> heaviest_adjacent = iterator->get_heaviest_adjacent();
+        offline_3::edge heaviest_adjacent = iterator->get_heaviest_adjacent();
 
-        if(heaviest_adjacent.second > max_weight)
+        if(heaviest_adjacent.get_weight() > heaviest_edge.get_weight())
         {
-            max_weight = heaviest_adjacent.second;
-            heaviest_edge = {iterator->get_id(), heaviest_adjacent.first};
+            heaviest_edge = offline_3::edge(iterator->get_id(), heaviest_adjacent.get_to(), heaviest_adjacent.get_weight());
         }
     }
 
-    return offline_3::edge(heaviest_edge.first, heaviest_edge.second, max_weight);
+    return heaviest_edge;
 }
 
 offline_3::edge offline_3::graph::get_lightest_edge() const
 {
-    int64_t min_weight = INT64_MAX;
-    std::pair<uint64_t, uint64_t> lightest_edge = {0, 0};
+    offline_3::edge lightest_edge(0, 0, INT64_MAX);
 
     for(std::set<offline_3::vertex>::iterator iterator = vertices.begin(); iterator != vertices.end(); ++iterator)
     {
-        std::pair<uint64_t, int64_t> lightest_adjacent = iterator->get_lightest_adjacent();
+        offline_3::edge lightest_adjacent = iterator->get_lightest_adjacent();
 
-        if(lightest_adjacent.second < min_weight)
+        if(lightest_adjacent.get_weight() < lightest_edge.get_weight())
         {
-            min_weight = lightest_adjacent.second;
-            lightest_edge = {iterator->get_id(), lightest_adjacent.first};
+            lightest_edge = offline_3::edge(iterator->get_id(), lightest_adjacent.get_to(), lightest_adjacent.get_weight());
         }
     }
 
-    return offline_3::edge(lightest_edge.first, lightest_edge.second, min_weight);
+    return lightest_edge;
 }
 
 std::vector<offline_3::edge> offline_3::graph::get_restricted_candidate_edge_list(const int64_t &mu) const
@@ -99,13 +95,13 @@ std::vector<offline_3::edge> offline_3::graph::get_restricted_candidate_edge_lis
 
     for(std::set<offline_3::vertex>::iterator iterator = vertices.begin(); iterator != vertices.end(); ++iterator)
     {
-        std::vector<std::pair<uint64_t, int64_t>> ral = iterator->get_restricted_adjacent_list(mu);
+        std::vector<offline_3::edge> ral = iterator->get_restricted_adjacent_list(mu);
 
         for(size_t i = 0; i < ral.size(); ++i)
         {
-            if(ral[i].second <= mu)
+            if(ral[i].get_weight() >= mu)
             {
-                offline_3::edge new_edge(iterator->get_id(), ral[i].first, ral[i].second);
+                offline_3::edge new_edge(iterator->get_id(), ral[i].get_to(), ral[i].get_weight());
 
                 rcl.push_back(new_edge);
             }
