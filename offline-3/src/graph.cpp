@@ -1,5 +1,6 @@
 #include "graph.hpp"
 #include "vertex.hpp"
+#include "edge.hpp"
 
 offline_3::graph::graph(const uint64_t &initial_size)
 {
@@ -39,6 +40,12 @@ bool offline_3::graph::add_edge(const uint64_t &from, const uint64_t &to, const 
     }
 
     from_iterator->insert_adjacent(to_iterator->get_id(), weight);
+
+    // offline_3::vertex from_vertex = *from_iterator;
+
+    // from_vertex.insert_adjacent(to_iterator->get_id(), weight);
+    // vertices.erase(from_iterator);
+    // vertices.insert(from_vertex);
 
     return true;
 }

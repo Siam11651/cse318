@@ -1,8 +1,10 @@
 #include "vertex.hpp"
+#include "edge.hpp"
 
 offline_3::vertex::vertex(const uint64_t &id)
 {
     this->id = id;
+
     adjacents = new std::map<uint64_t, int64_t>();
 }
 
@@ -90,9 +92,4 @@ std::vector<offline_3::edge> offline_3::vertex::get_restricted_adjacent_list(con
 bool offline_3::vertex::operator < (const offline_3::vertex &other) const
 {
     return id < other.id;
-}
-
-offline_3::vertex::~vertex()
-{
-    delete adjacents;
 }

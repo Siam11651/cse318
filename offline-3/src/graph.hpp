@@ -3,10 +3,10 @@
 #include <vector>
 #include <set>
 #include <cstdint>
-#include "edge.hpp"
 
 namespace offline_3
 {
+    class edge;
     class vertex;
 
     class graph

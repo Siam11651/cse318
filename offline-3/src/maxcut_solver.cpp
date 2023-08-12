@@ -41,7 +41,7 @@ offline_3::maxcut offline_3::maxcut_solver::get_semi_greedy_maxcut(const offline
     offline_3::edge heaviest_edge = graph.get_heaviest_edge();
     int64_t weight_min = lightest_edge.get_weight();
     int64_t weight_max = heaviest_edge.get_weight();
-    double_t mu = weight_min + alpha * (weight_max - weight_min);
+    int64_t mu = weight_min + alpha * (weight_max - weight_min);
     std::vector<offline_3::edge> restricted_candidate_list = graph.get_restricted_candidate_edge_list(mu);
     size_t random_candidate_index = prng_engine() % restricted_candidate_list.size();
     std::set<uint64_t> set_x;
@@ -50,14 +50,19 @@ offline_3::maxcut offline_3::maxcut_solver::get_semi_greedy_maxcut(const offline
     set_x.insert(restricted_candidate_list[random_candidate_index].get_from());
     set_y.insert(restricted_candidate_list[random_candidate_index].get_to());
 
-    std::set<uint64_t> united_set;
-    
-    std::set_union(set_x.begin(), set_x.end(), set_y.begin(), set_y.end(), std::inserter(united_set, united_set.end()));
-
     std::set<uint64_t> graph_vertices_set = graph.get_vertices_id_set();
 
-    while(united_set != graph_vertices_set)
+    while(true)
     {
+        std::set<uint64_t> united_set;
+            
+        std::set_union(set_x.begin(), set_x.end(), set_y.begin(), set_y.end(), std::inserter(united_set, united_set.end()));
+
+        if(united_set == graph_vertices_set)
+        {
+            break;
+        }
+
         std::set<uint64_t> subtracted_set;
 
         std::set_difference(graph_vertices_set.begin(), graph_vertices_set.end(), united_set.begin(), united_set.end(), std::inserter(subtracted_set, subtracted_set.end()));

@@ -4,10 +4,11 @@
 #include <vector>
 #include <map>
 #include <memory>
-#include "edge.hpp"
 
 namespace offline_3
 {
+    class edge;
+
     class vertex
     {
     private:
@@ -24,6 +25,5 @@ namespace offline_3
         bool has_adjacent(const uint64_t &id) const;
         std::vector<offline_3::edge> get_restricted_adjacent_list(const int64_t &mu) const;
         bool operator < (const offline_3::vertex &other) const;
-        ~vertex();
     };
 }
