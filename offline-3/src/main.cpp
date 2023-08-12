@@ -14,7 +14,5 @@ int main()
     graph.add_edge(2, 3, 1);
     graph.add_edge(3, 1, 1);
 
-    graph.clear();
-
     return 0;
 }

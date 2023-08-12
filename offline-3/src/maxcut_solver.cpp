@@ -15,7 +15,7 @@ offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &g
 
         local_search_optimization(graph, cut.first, cut.second);
 
-        int64_t weight = get_cut_weight(cut.first, cut.second);
+        int64_t weight = get_cut_weight(graph, cut.first, cut.second);
 
         if(weight > max_weight)
         {
