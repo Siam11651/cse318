@@ -6,4 +6,5 @@ add_executable(offline-3
     "src/edge.cpp"
     "src/random.cpp"
     "src/maxcut_solver.cpp"
+    "src/argument_parser.cpp"
 )

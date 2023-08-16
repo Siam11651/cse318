@@ -3,6 +3,8 @@
 #include "maxcut_solver.hpp"
 #include "edge.hpp"
 
+uint64_t offline_3::maxcut_solver::iteration_count = 50;
+bool offline_3::maxcut_solver::is_semi_greedy = false;
 std::mt19937_64 offline_3::maxcut_solver::prng_engine;
 
 offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &graph)
@@ -10,9 +12,9 @@ offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &g
     int64_t max_weight = INT64_MIN;
     offline_3::maxcut maxcut = {std::set<uint64_t>(), std::set<uint64_t>()};
 
-    for(size_t i = 0; i < 50; ++i)
+    for(size_t i = 0; i < iteration_count; ++i)
     {
-        offline_3::maxcut cut = get_semi_greedy_maxcut(graph);
+        offline_3::maxcut cut = get_greedy_maxcut(graph);
 
         local_search_optimization(graph, cut.first, cut.second);
 
@@ -28,30 +30,37 @@ offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &g
     return maxcut;
 }
 
-offline_3::maxcut offline_3::maxcut_solver::get_semi_greedy_maxcut(const offline_3::graph &graph)
+offline_3::maxcut offline_3::maxcut_solver::get_greedy_maxcut(const offline_3::graph &graph)
 {
-    double_t alpha = (double_t)prng_engine() / std::mt19937_64::max();
+    double_t alpha = 1;
+
+    if(is_semi_greedy)
+    {
+        alpha = (double_t)prng_engine() / std::mt19937_64::max();
+    }
+
     offline_3::edge lightest_edge = graph.get_lightest_edge();
     offline_3::edge heaviest_edge = graph.get_heaviest_edge();
     int64_t weight_min = lightest_edge.get_weight();
     int64_t weight_max = heaviest_edge.get_weight();
     int64_t mu = weight_min + alpha * (weight_max - weight_min);
     std::vector<offline_3::edge> restricted_candidate_list = graph.get_restricted_candidate_edge_list(mu);
-    size_t random_candidate_index = prng_engine() % restricted_candidate_list.size();
+    size_t candidate_index = prng_engine() % restricted_candidate_list.size();
+    
     std::set<uint64_t> set_x;
     std::set<uint64_t> set_y;
 
-    set_x.insert(restricted_candidate_list[random_candidate_index].get_from());
-    set_y.insert(restricted_candidate_list[random_candidate_index].get_to());
+    set_x.insert(restricted_candidate_list[candidate_index].get_from());
+    set_y.insert(restricted_candidate_list[candidate_index].get_to());
 
     std::set<uint64_t> graph_vertices_set = graph.get_vertices_id_set();
     std::set<uint64_t> subtracted_set = graph_vertices_set;
     std::set<uint64_t> united_set;
 
-    united_set.insert(restricted_candidate_list[random_candidate_index].get_from());
-    united_set.insert(restricted_candidate_list[random_candidate_index].get_to());
-    subtracted_set.erase(restricted_candidate_list[random_candidate_index].get_from());
-    subtracted_set.erase(restricted_candidate_list[random_candidate_index].get_to());
+    united_set.insert(restricted_candidate_list[candidate_index].get_from());
+    united_set.insert(restricted_candidate_list[candidate_index].get_to());
+    subtracted_set.erase(restricted_candidate_list[candidate_index].get_from());
+    subtracted_set.erase(restricted_candidate_list[candidate_index].get_to());
 
     uint64_t foo = 0;
 
@@ -112,8 +121,8 @@ offline_3::maxcut offline_3::maxcut_solver::get_semi_greedy_maxcut(const offline
             }
         }
 
-        random_candidate_index = prng_engine() % restricted_candidate_vertex_list.size();
-        uint64_t random_candidate_id = restricted_candidate_vertex_list[random_candidate_index];
+        candidate_index = prng_engine() % restricted_candidate_vertex_list.size();
+        uint64_t random_candidate_id = restricted_candidate_vertex_list[candidate_index];
 
         if(sigma_x[random_candidate_id] > sigma_y[random_candidate_id])
         {
@@ -186,4 +195,14 @@ int64_t offline_3::maxcut_solver::get_cut_weight(const offline_3::graph &graph, 
     }
 
     return weight;
+}
+
+void offline_3::maxcut_solver::set_iteration_count(const uint64_t &iteration_count)
+{
+    offline_3::maxcut_solver::iteration_count = iteration_count;
+}
+
+void offline_3::maxcut_solver::set_semi_greedy(const bool &is_semi_greedy)
+{
+    offline_3::maxcut_solver::is_semi_greedy = is_semi_greedy;
 }

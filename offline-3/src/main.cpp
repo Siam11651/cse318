@@ -2,9 +2,12 @@
 #include "graph.hpp"
 #include "edge.hpp"
 #include "maxcut_solver.hpp"
+#include "argument_parser.hpp"
 
-int main()
+int main(int arguments_count, char **arguments_value)
 {
+    offline_3::argument_parser::parse(arguments_count, arguments_value);
+
     size_t vertices_count, edges_count;
 
     std::cin >> vertices_count >> edges_count;
