@@ -9,10 +9,9 @@ offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &g
     int64_t max_weight = INT64_MIN;
     offline_3::maxcut maxcut = {std::set<uint64_t>(), std::set<uint64_t>()};
 
-    while(true)
+    for(size_t i = 0; i < 50; ++i)
     {
         offline_3::maxcut cut = get_semi_greedy_maxcut(graph);
-        int64_t weight_before = get_cut_weight(graph, cut.first, cut.second);
 
         local_search_optimization(graph, cut.first, cut.second);
 
@@ -22,11 +21,6 @@ offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &g
         {
             max_weight = weight;
             maxcut = cut;
-        }
-
-        if(weight == weight_before)
-        {
-            break;
         }
     }
 
@@ -51,24 +45,27 @@ offline_3::maxcut offline_3::maxcut_solver::get_semi_greedy_maxcut(const offline
     set_y.insert(restricted_candidate_list[random_candidate_index].get_to());
 
     std::set<uint64_t> graph_vertices_set = graph.get_vertices_id_set();
+    std::set<uint64_t> subtracted_set = graph_vertices_set;
+    std::set<uint64_t> united_set;
+
+    united_set.insert(restricted_candidate_list[random_candidate_index].get_from());
+    united_set.insert(restricted_candidate_list[random_candidate_index].get_to());
+    subtracted_set.erase(restricted_candidate_list[random_candidate_index].get_from());
+    subtracted_set.erase(restricted_candidate_list[random_candidate_index].get_to());
+
+    uint64_t foo = 0;
 
     while(true)
     {
-        std::set<uint64_t> united_set;
-            
-        std::set_union(set_x.begin(), set_x.end(), set_y.begin(), set_y.end(), std::inserter(united_set, united_set.end()));
-
         if(united_set == graph_vertices_set)
         {
             break;
         }
 
-        std::set<uint64_t> subtracted_set;
-
-        std::set_difference(graph_vertices_set.begin(), graph_vertices_set.end(), united_set.begin(), united_set.end(), std::inserter(subtracted_set, subtracted_set.end()));
+        ++foo;
         
-        std::map<uint64_t, int64_t> sigma_x;
-        std::map<uint64_t, int64_t> sigma_y;
+        std::vector<int64_t> sigma_x(graph.get_vertices_count() + 1, 0);
+        std::vector<int64_t> sigma_y(graph.get_vertices_count() + 1, 0);
 
         for(std::set<uint64_t>::iterator iterator_subtracted = subtracted_set.begin(); iterator_subtracted != subtracted_set.end(); ++iterator_subtracted)
         {
@@ -86,19 +83,19 @@ offline_3::maxcut offline_3::maxcut_solver::get_semi_greedy_maxcut(const offline
         int64_t sigma_x_min = INT64_MAX;
         int64_t sigma_x_max = INT64_MIN;
 
-        for(std::map<uint64_t, int64_t>::iterator iterator_sigma_x = sigma_x.begin(); iterator_sigma_x != sigma_x.end(); ++iterator_sigma_x)
+        for(std::vector<int64_t>::const_iterator iterator_sigma_x = sigma_x.begin(); iterator_sigma_x != sigma_x.end(); ++iterator_sigma_x)
         {
-            sigma_x_min = std::min(sigma_x_min, iterator_sigma_x->second);
-            sigma_x_max = std::max(sigma_x_max, iterator_sigma_x->second);
+            sigma_x_min = std::min(sigma_x_min, *iterator_sigma_x);
+            sigma_x_max = std::max(sigma_x_max, *iterator_sigma_x);
         }
 
         int64_t sigma_y_min = INT64_MAX;
         int64_t sigma_y_max = INT64_MIN;
 
-        for(std::map<uint64_t, int64_t>::iterator iterator_sigma_y = sigma_y.begin(); iterator_sigma_y != sigma_y.end(); ++iterator_sigma_y)
+        for(std::vector<int64_t>::const_iterator iterator_sigma_y = sigma_y.begin(); iterator_sigma_y != sigma_y.end(); ++iterator_sigma_y)
         {
-            sigma_y_min = std::min(sigma_y_min, iterator_sigma_y->second);
-            sigma_y_max = std::max(sigma_y_max, iterator_sigma_y->second);
+            sigma_y_min = std::min(sigma_y_min, *iterator_sigma_y);
+            sigma_y_max = std::max(sigma_y_max, *iterator_sigma_y);
         }
 
         weight_min = std::min(sigma_x_min, sigma_y_min);
@@ -115,7 +112,7 @@ offline_3::maxcut offline_3::maxcut_solver::get_semi_greedy_maxcut(const offline
             }
         }
 
-        random_candidate_index = prng_engine() % restricted_candidate_list.size();
+        random_candidate_index = prng_engine() % restricted_candidate_vertex_list.size();
         uint64_t random_candidate_id = restricted_candidate_vertex_list[random_candidate_index];
 
         if(sigma_x[random_candidate_id] > sigma_y[random_candidate_id])
@@ -126,6 +123,9 @@ offline_3::maxcut offline_3::maxcut_solver::get_semi_greedy_maxcut(const offline
         {
             set_y.insert(random_candidate_id);
         }
+
+        united_set.insert(random_candidate_id);
+        subtracted_set.erase(random_candidate_id);
     }
 
     return {set_x, set_y};

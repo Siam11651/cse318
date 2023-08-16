@@ -13,12 +13,12 @@ namespace offline_3
     {
     private:
         uint64_t id;
-        std::map<uint64_t, int64_t> *adjacents;
+        std::map<uint64_t, int64_t> adjacents;
 
     public:
         vertex(const uint64_t &id = 0);
         uint64_t get_id() const;
-        void insert_adjacent(const uint64_t &id, const int64_t &weight) const;
+        void insert_adjacent(const uint64_t &id, const int64_t &weight);
         int64_t get_weight(const uint64_t &id) const;
         offline_3::edge get_heaviest_adjacent() const;
         offline_3::edge get_lightest_adjacent() const;
