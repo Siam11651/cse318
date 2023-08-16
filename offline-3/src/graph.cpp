@@ -1,52 +1,38 @@
 #include "graph.hpp"
-#include "vertex.hpp"
 #include "edge.hpp"
 
-offline_3::graph::graph(const uint64_t &initial_size)
+offline_3::graph::graph(const uint64_t &vertices_count)
 {
-    for(size_t i = 0; i < initial_size; ++i)
-    {
-        vertices.push_back(offline_3::vertex(i + 1));
-    }
+    this->vertices_count = vertices_count;
+    adjacency_matrix.assign(vertices_count * vertices_count, 0);
 }
 
-bool offline_3::graph::add_edge(const uint64_t &from, const uint64_t &to, const int64_t &weight)
+void offline_3::graph::add_edge(const uint64_t &from, const uint64_t &to, const int64_t &weight)
 {
-    if(from > vertices.size() || to > vertices.size())
-    {
-        return false;
-    }
-
-    offline_3::vertex &from_vertex = vertices[from - 1];
-    offline_3::vertex &to_vertex = vertices[to - 1];
-
-    if(from_vertex.has_adjacent(to))
-    {
-        return false;
-    }
-
-    from_vertex.insert_adjacent(to, weight);
-
-    return true;
+    adjacency_matrix[(from - 1) * vertices_count + to - 1] = weight;
 }
 
-const offline_3::vertex &offline_3::graph::get_vertex(const uint64_t &id) const
+int64_t offline_3::graph::get_weight(const uint64_t &from, const uint64_t &to) const
 {
-    return vertices[id - 1];
+    return adjacency_matrix[(from - 1) * vertices_count + to - 1];
 }
 
 offline_3::edge offline_3::graph::get_heaviest_edge() const
 {
     offline_3::edge heaviest_edge(0, 0, INT16_MIN);
+    size_t index = 0;
 
-    for(std::vector<offline_3::vertex>::const_iterator iterator = vertices.begin(); iterator != vertices.end(); ++iterator)
+    for(std::vector<int64_t>::const_iterator iterator = adjacency_matrix.begin(); iterator != adjacency_matrix.end(); ++iterator)
     {
-        offline_3::edge heaviest_adjacent = iterator->get_heaviest_adjacent();
-
-        if(heaviest_adjacent.get_weight() > heaviest_edge.get_weight())
+        if(*iterator > heaviest_edge.get_weight())
         {
-            heaviest_edge = offline_3::edge(iterator->get_id(), heaviest_adjacent.get_to(), heaviest_adjacent.get_weight());
+            uint64_t from = index / vertices_count + 1;
+            uint64_t to = index % vertices_count + 1;
+            int64_t weight = heaviest_edge.get_weight();
+            heaviest_edge = offline_3::edge(from, to, weight);
         }
+
+        ++index;
     }
 
     return heaviest_edge;
@@ -55,15 +41,19 @@ offline_3::edge offline_3::graph::get_heaviest_edge() const
 offline_3::edge offline_3::graph::get_lightest_edge() const
 {
     offline_3::edge lightest_edge(0, 0, INT64_MAX);
+    size_t index = 0;
 
-    for(std::vector<offline_3::vertex>::const_iterator iterator = vertices.begin(); iterator != vertices.end(); ++iterator)
+    for(std::vector<int64_t>::const_iterator iterator = adjacency_matrix.begin(); iterator != adjacency_matrix.end(); ++iterator)
     {
-        offline_3::edge lightest_adjacent = iterator->get_lightest_adjacent();
-
-        if(lightest_adjacent.get_weight() < lightest_edge.get_weight())
+        if(*iterator > lightest_edge.get_weight())
         {
-            lightest_edge = offline_3::edge(iterator->get_id(), lightest_adjacent.get_to(), lightest_adjacent.get_weight());
+            uint64_t from = index / vertices_count + 1;
+            uint64_t to = index % vertices_count + 1;
+            int64_t weight = lightest_edge.get_weight();
+            lightest_edge = offline_3::edge(from, to, weight);
         }
+
+        ++index;
     }
 
     return lightest_edge;
@@ -72,20 +62,19 @@ offline_3::edge offline_3::graph::get_lightest_edge() const
 std::vector<offline_3::edge> offline_3::graph::get_restricted_candidate_edge_list(const int64_t &mu) const
 {
     std::vector<offline_3::edge> rcl;
+    size_t index = 0;
 
-    for(std::vector<offline_3::vertex>::const_iterator iterator = vertices.begin(); iterator != vertices.end(); ++iterator)
+    for(std::vector<int64_t>::const_iterator iterator = adjacency_matrix.begin(); iterator != adjacency_matrix.end(); ++iterator)
     {
-        std::vector<offline_3::edge> ral = iterator->get_restricted_adjacent_list(mu);
-
-        for(size_t i = 0; i < ral.size(); ++i)
+        if(*iterator >= mu)
         {
-            if(ral[i].get_weight() >= mu)
-            {
-                offline_3::edge new_edge(iterator->get_id(), ral[i].get_to(), ral[i].get_weight());
+            uint64_t from = index / vertices_count + 1;
+            uint64_t to = index % vertices_count + 1;
 
-                rcl.push_back(new_edge);
-            }
+            rcl.push_back(offline_3::edge(from, to, *iterator));
         }
+
+        ++index;
     }
 
     return rcl;
@@ -95,9 +84,9 @@ std::set<uint64_t> offline_3::graph::get_vertices_id_set() const
 {
     std::set<uint64_t> to_return;
 
-    for(std::vector<offline_3::vertex>::const_iterator iterator = vertices.begin(); iterator != vertices.end(); ++iterator)
+    for(uint64_t i = 1; i <= vertices_count; ++i)
     {
-        to_return.insert(iterator->get_id());
+        to_return.insert(i);
     }
 
     return to_return;
@@ -105,5 +94,5 @@ std::set<uint64_t> offline_3::graph::get_vertices_id_set() const
 
 uint64_t offline_3::graph::get_vertices_count() const
 {
-    return vertices.size();
+    return vertices_count;
 }

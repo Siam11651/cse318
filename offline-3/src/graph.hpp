@@ -7,17 +7,17 @@
 namespace offline_3
 {
     class edge;
-    class vertex;
 
     class graph
     {
     private:
-        std::vector<offline_3::vertex> vertices;
+        size_t vertices_count;
+        std::vector<int64_t> adjacency_matrix;
 
     public:
-        graph(const uint64_t &initial_size = 0);
-        bool add_edge(const uint64_t &from, const uint64_t &to, const int64_t &weight);
-        const offline_3::vertex &get_vertex(const uint64_t &index) const;
+        graph(const uint64_t &vertices_count = 0);
+        void add_edge(const uint64_t &from, const uint64_t &to, const int64_t &weight);
+        int64_t get_weight(const uint64_t &from, const uint64_t &to) const;
         offline_3::edge get_heaviest_edge() const;
         offline_3::edge get_lightest_edge() const;
         std::vector<offline_3::edge> get_restricted_candidate_edge_list(const int64_t &mu) const;

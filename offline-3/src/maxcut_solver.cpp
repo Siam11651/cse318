@@ -1,7 +1,6 @@
 #include <random>
 #include <algorithm>
 #include "maxcut_solver.hpp"
-#include "vertex.hpp"
 #include "edge.hpp"
 
 offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &graph)
@@ -71,12 +70,12 @@ offline_3::maxcut offline_3::maxcut_solver::get_semi_greedy_maxcut(const offline
         {
             for(std::set<uint64_t>::iterator iterator_y = set_y.begin(); iterator_y != set_y.end(); ++iterator_y)
             {
-                sigma_x[*iterator_subtracted] += graph.get_vertex(*iterator_subtracted).get_weight(*iterator_y);
+                sigma_x[*iterator_subtracted] += graph.get_weight(*iterator_subtracted, *iterator_y);
             }
 
             for(std::set<uint64_t>::iterator iterator_x = set_x.begin(); iterator_x != set_x.end(); ++iterator_x)
             {
-                sigma_y[*iterator_subtracted] += graph.get_vertex(*iterator_subtracted).get_weight(*iterator_x);
+                sigma_y[*iterator_subtracted] += graph.get_weight(*iterator_subtracted, *iterator_x);
             }
         }
 
@@ -147,12 +146,12 @@ void offline_3::maxcut_solver::local_search_optimization(const offline_3::graph 
 
             for(std::set<uint64_t>::iterator iterator2 = vertices_set2.begin(); iterator2 != vertices_set2.end(); ++iterator2)
             {
-                sigma1 += graph.get_vertex(*iterator).get_weight(*iterator2);
+                sigma1 += graph.get_weight(*iterator, *iterator2);
             }
 
             for(std::set<uint64_t>::iterator iterator1 = vertices_set1.begin(); iterator1 != vertices_set1.end(); ++iterator1)
             {
-                sigma2 += graph.get_vertex(*iterator).get_weight(*iterator1);
+                sigma2 += graph.get_weight(*iterator, *iterator1);
             }
 
             if(vertices_set1.find(*iterator) != vertices_set1.end() && sigma2 > sigma1)
@@ -181,7 +180,7 @@ int64_t offline_3::maxcut_solver::get_cut_weight(const offline_3::graph &graph, 
     {
         for(std::set<uint64_t>::iterator iterator2 = vertices_set2.begin(); iterator2 != vertices_set2.end(); ++iterator2)
         {
-            weight += graph.get_vertex(*iterator1).get_weight(*iterator2);
+            weight += graph.get_weight(*iterator1, *iterator2);
         }
     }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vertex.hpp"
+#include <cstdint>
 
 namespace offline_3
 {

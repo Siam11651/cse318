@@ -1,5 +1,4 @@
 #include <iostream>
-#include "vertex.hpp"
 #include "graph.hpp"
 #include "edge.hpp"
 #include "maxcut_solver.hpp"
