@@ -1,5 +1,6 @@
 #pragma once
 
+#include <random>
 #include <memory>
 #include "graph.hpp"
 
@@ -12,6 +13,7 @@ namespace offline_3
     private:
         static offline_3::maxcut get_semi_greedy_maxcut(const offline_3::graph &graph);
         static void local_search_optimization(const offline_3::graph &graph, std::set<uint64_t> &vertices_set1, std::set<uint64_t> &vertices_set2);
+        static std::mt19937_64 prng_engine;    // mersenne twister pseudo random number generator engine
 
     public:
         static offline_3::maxcut get_maxcut(const offline_3::graph &graph);

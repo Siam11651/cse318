@@ -4,5 +4,6 @@ add_executable(offline-3
     "src/main.cpp"
     "src/graph.cpp"
     "src/edge.cpp"
+    "src/random.cpp"
     "src/maxcut_solver.cpp"
 )

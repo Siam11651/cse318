@@ -1,7 +1,9 @@
-#include <random>
+#include <iostream>
 #include <algorithm>
 #include "maxcut_solver.hpp"
 #include "edge.hpp"
+
+std::mt19937_64 offline_3::maxcut_solver::prng_engine;
 
 offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &graph)
 {
@@ -28,7 +30,6 @@ offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &g
 
 offline_3::maxcut offline_3::maxcut_solver::get_semi_greedy_maxcut(const offline_3::graph &graph)
 {
-    std::mt19937_64 prng_engine;    // mersenne twister pseudo random number generator engine
     double_t alpha = (double_t)prng_engine() / std::mt19937_64::max();
     offline_3::edge lightest_edge = graph.get_lightest_edge();
     offline_3::edge heaviest_edge = graph.get_heaviest_edge();
