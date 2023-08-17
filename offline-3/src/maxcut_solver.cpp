@@ -4,7 +4,7 @@
 #include "edge.hpp"
 
 uint64_t offline_3::maxcut_solver::iteration_count = 50;
-bool offline_3::maxcut_solver::is_semi_greedy = false;
+uint16_t offline_3::maxcut_solver::greedy_level = 2;
 std::mt19937_64 offline_3::maxcut_solver::prng_engine;
 
 offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &graph)
@@ -32,9 +32,13 @@ offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &g
 
 offline_3::maxcut offline_3::maxcut_solver::get_greedy_maxcut(const offline_3::graph &graph)
 {
-    double_t alpha = 1;
+    double_t alpha = 1.0;
 
-    if(is_semi_greedy)
+    if(greedy_level == 0)
+    {
+        alpha = 0.0;
+    }
+    else if(greedy_level == 1)
     {
         alpha = (double_t)prng_engine() / std::mt19937_64::max();
     }
@@ -75,36 +79,32 @@ offline_3::maxcut offline_3::maxcut_solver::get_greedy_maxcut(const offline_3::g
         
         std::vector<int64_t> sigma_x(graph.get_vertices_count() + 1, 0);
         std::vector<int64_t> sigma_y(graph.get_vertices_count() + 1, 0);
+        int64_t sigma_x_min = INT64_MAX;
+        int64_t sigma_x_max = INT64_MIN;
+        int64_t sigma_y_min = INT64_MAX;
+        int64_t sigma_y_max = INT64_MIN;
 
         for(std::set<uint64_t>::iterator iterator_subtracted = subtracted_set.begin(); iterator_subtracted != subtracted_set.end(); ++iterator_subtracted)
         {
+            int64_t sigma_x_value = 0;
+            int64_t sigma_y_value = 0;
+
             for(std::set<uint64_t>::iterator iterator_y = set_y.begin(); iterator_y != set_y.end(); ++iterator_y)
             {
-                sigma_x[*iterator_subtracted] += graph.get_weight(*iterator_subtracted, *iterator_y);
+                sigma_x_value += graph.get_weight(*iterator_subtracted, *iterator_y);
             }
 
             for(std::set<uint64_t>::iterator iterator_x = set_x.begin(); iterator_x != set_x.end(); ++iterator_x)
             {
-                sigma_y[*iterator_subtracted] += graph.get_weight(*iterator_subtracted, *iterator_x);
+                sigma_y_value += graph.get_weight(*iterator_subtracted, *iterator_x);
             }
-        }
 
-        int64_t sigma_x_min = INT64_MAX;
-        int64_t sigma_x_max = INT64_MIN;
-
-        for(std::vector<int64_t>::const_iterator iterator_sigma_x = sigma_x.begin(); iterator_sigma_x != sigma_x.end(); ++iterator_sigma_x)
-        {
-            sigma_x_min = std::min(sigma_x_min, *iterator_sigma_x);
-            sigma_x_max = std::max(sigma_x_max, *iterator_sigma_x);
-        }
-
-        int64_t sigma_y_min = INT64_MAX;
-        int64_t sigma_y_max = INT64_MIN;
-
-        for(std::vector<int64_t>::const_iterator iterator_sigma_y = sigma_y.begin(); iterator_sigma_y != sigma_y.end(); ++iterator_sigma_y)
-        {
-            sigma_y_min = std::min(sigma_y_min, *iterator_sigma_y);
-            sigma_y_max = std::max(sigma_y_max, *iterator_sigma_y);
+            sigma_x_min = std::min(sigma_x_min, sigma_x_value);
+            sigma_x_max = std::max(sigma_x_max, sigma_x_value);
+            sigma_y_min = std::min(sigma_y_min, sigma_y_value);
+            sigma_y_max = std::max(sigma_y_max, sigma_y_value);
+            sigma_x[*iterator_subtracted] = sigma_x_value;
+            sigma_y[*iterator_subtracted] = sigma_y_value;
         }
 
         weight_min = std::min(sigma_x_min, sigma_y_min);
@@ -202,7 +202,7 @@ void offline_3::maxcut_solver::set_iteration_count(const uint64_t &iteration_cou
     offline_3::maxcut_solver::iteration_count = iteration_count;
 }
 
-void offline_3::maxcut_solver::set_semi_greedy(const bool &is_semi_greedy)
+void offline_3::maxcut_solver::set_greedy_level(const uint16_t &greedy_level)
 {
-    offline_3::maxcut_solver::is_semi_greedy = is_semi_greedy;
+    offline_3::maxcut_solver::greedy_level = greedy_level;
 }

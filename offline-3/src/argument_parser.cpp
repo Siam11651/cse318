@@ -37,7 +37,11 @@ void offline_3::argument_parser::set_flag(const std::string &name)
 {
     if(name == "semi-greedy")
     {
-        offline_3::maxcut_solver::set_semi_greedy(true);
+        offline_3::maxcut_solver::set_greedy_level(1);
+    }
+    else if(name == "random-greedy")
+    {
+        offline_3::maxcut_solver::set_greedy_level(0);
     }
     else
     {
