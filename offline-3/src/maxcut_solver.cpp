@@ -7,27 +7,29 @@ uint64_t offline_3::maxcut_solver::iteration_count = 50;
 uint16_t offline_3::maxcut_solver::greedy_level = 2;
 std::mt19937_64 offline_3::maxcut_solver::prng_engine;
 
-offline_3::maxcut offline_3::maxcut_solver::get_maxcut(const offline_3::graph &graph)
+std::tuple<int64_t, int64_t, uint64_t> offline_3::maxcut_solver::get_maxcut(const offline_3::graph &graph)
 {
-    int64_t max_weight = INT64_MIN;
-    offline_3::maxcut maxcut = {std::set<uint64_t>(), std::set<uint64_t>()};
+    int64_t best_maxcut_weight = INT64_MIN;
+    int64_t best_maxcut_weight_pre_search = 0;
+    uint64_t total_local_search_iterations = 0;
 
     for(size_t i = 0; i < iteration_count; ++i)
     {
-        offline_3::maxcut cut = get_greedy_maxcut(graph);
+        offline_3::maxcut maxcut = get_greedy_maxcut(graph);
+        int64_t weight_pre_search = get_cut_weight(graph, maxcut.first, maxcut.second);
+        total_local_search_iterations += local_search_optimization(graph, maxcut.first, maxcut.second);
+        int64_t weight = get_cut_weight(graph, maxcut.first, maxcut.second);
 
-        local_search_optimization(graph, cut.first, cut.second);
-
-        int64_t weight = get_cut_weight(graph, cut.first, cut.second);
-
-        if(weight > max_weight)
+        if(weight > best_maxcut_weight)
         {
-            max_weight = weight;
-            maxcut = cut;
+            best_maxcut_weight = weight;
+            best_maxcut_weight_pre_search = weight_pre_search;
         }
     }
 
-    return maxcut;
+    uint64_t average_local_search_iterations = total_local_search_iterations / iteration_count;
+
+    return {best_maxcut_weight, best_maxcut_weight_pre_search, average_local_search_iterations};
 }
 
 offline_3::maxcut offline_3::maxcut_solver::get_greedy_maxcut(const offline_3::graph &graph)
@@ -57,7 +59,7 @@ offline_3::maxcut offline_3::maxcut_solver::get_greedy_maxcut(const offline_3::g
     set_x.insert(restricted_candidate_list[candidate_index].get_from());
     set_y.insert(restricted_candidate_list[candidate_index].get_to());
 
-    std::set<uint64_t> graph_vertices_set = graph.get_vertices_id_set();
+    const std::set<uint64_t> &graph_vertices_set = graph.get_vertices_id_set();
     std::set<uint64_t> subtracted_set = graph_vertices_set;
     std::set<uint64_t> united_set;
 
@@ -66,16 +68,12 @@ offline_3::maxcut offline_3::maxcut_solver::get_greedy_maxcut(const offline_3::g
     subtracted_set.erase(restricted_candidate_list[candidate_index].get_from());
     subtracted_set.erase(restricted_candidate_list[candidate_index].get_to());
 
-    uint64_t foo = 0;
-
     while(true)
     {
         if(united_set == graph_vertices_set)
         {
             break;
         }
-
-        ++foo;
         
         std::vector<int64_t> sigma_x(graph.get_vertices_count() + 1, 0);
         std::vector<int64_t> sigma_y(graph.get_vertices_count() + 1, 0);
@@ -140,14 +138,16 @@ offline_3::maxcut offline_3::maxcut_solver::get_greedy_maxcut(const offline_3::g
     return {set_x, set_y};
 }
 
-void offline_3::maxcut_solver::local_search_optimization(const offline_3::graph &graph, std::set<uint64_t> &vertices_set1, std::set<uint64_t> &vertices_set2)
+uint64_t offline_3::maxcut_solver::local_search_optimization(const offline_3::graph &graph, std::set<uint64_t> &vertices_set1, std::set<uint64_t> &vertices_set2)
 {
     bool change = true;
+    uint64_t local_search_iterations = 0;
 
     while(change)
     {
+        ++local_search_iterations;
         change = false;
-        std::set<uint64_t> graph_vertices_set = graph.get_vertices_id_set();
+        const std::set<uint64_t> &graph_vertices_set = graph.get_vertices_id_set();
 
         for(std::set<uint64_t>::iterator iterator = graph_vertices_set.begin(); !change && iterator != graph_vertices_set.end(); ++iterator)
         {
@@ -180,6 +180,8 @@ void offline_3::maxcut_solver::local_search_optimization(const offline_3::graph 
             }
         }
     }
+
+    return local_search_iterations;
 }
 
 int64_t offline_3::maxcut_solver::get_cut_weight(const offline_3::graph &graph, const std::set<uint64_t> &vertices_set1, const std::set<uint64_t> &vertices_set2)

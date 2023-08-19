@@ -18,6 +18,7 @@ namespace offline_3
 
     public:
         static bool show_help_set();
+        static void print_help();
         static void parse(uint64_t argument_count, char **argument_values);
     };
 }

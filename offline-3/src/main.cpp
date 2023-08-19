@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "graph.hpp"
 #include "edge.hpp"
 #include "maxcut_solver.hpp"
@@ -7,6 +8,13 @@
 int main(int arguments_count, char **arguments_value)
 {
     offline_3::argument_parser::parse(arguments_count, arguments_value);
+
+    if(offline_3::argument_parser::show_help_set())
+    {
+        offline_3::argument_parser::print_help();
+
+        return 0;
+    }
 
     size_t vertices_count, edges_count;
 
@@ -23,12 +31,11 @@ int main(int arguments_count, char **arguments_value)
         std::cin >> from >> to >> weight;
 
         graph.add_edge(from, to, weight);
-        graph.add_edge(to, from, weight);
     }
 
-    offline_3::maxcut maxcut = offline_3::maxcut_solver::get_maxcut(graph);
+    std::tuple<int64_t, int64_t, uint64_t> maxcut_solve = offline_3::maxcut_solver::get_maxcut(graph);
 
-    std::cout << offline_3::maxcut_solver::get_cut_weight(graph, maxcut.first, maxcut.second) << std::endl;
+    std::cout << std::get<0>(maxcut_solve) << " " << std::get<1>(maxcut_solve) << " " << std::get<2>(maxcut_solve) << std::endl;
 
     return 0;
 }

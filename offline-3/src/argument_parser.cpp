@@ -39,9 +39,13 @@ void offline_3::argument_parser::set_flag(const std::string &name)
     {
         offline_3::maxcut_solver::set_greedy_level(1);
     }
-    else if(name == "random-greedy")
+    else if(name == "random")
     {
         offline_3::maxcut_solver::set_greedy_level(0);
+    }
+    else if(name == "help")
+    {
+        show_help = true;
     }
     else
     {
@@ -74,6 +78,16 @@ void offline_3::argument_parser::parse(uint64_t argument_count, char **argument_
             set_value(argument_name, argument_value);
         }
     }
+}
+
+void offline_3::argument_parser::print_help()
+{
+    std::cout << "Usage: " << program_name << " [options]" << std::endl;
+    std::cout << "Options:" << std::endl;
+    std::cout << "--iterator-count\tSet number of GRASP iterations (default=50)" << std::endl;
+    std::cout << "--semi-greedy\t\tUse semi-greedy approach to get maxcut" << std::endl;
+    std::cout << "--random\t\tUse random approach to get maxcut" << std::endl;
+    std::cout << "--help\t\t\tShow this message" << std::endl;
 }
 
 bool offline_3::argument_parser::show_help_set()

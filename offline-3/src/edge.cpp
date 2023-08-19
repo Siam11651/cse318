@@ -21,3 +21,13 @@ int64_t offline_3::edge::get_weight() const
 {
     return weight;
 }
+
+bool offline_3::edge::operator < (const offline_3::edge &other) const
+{
+    return weight < other.weight;
+}
+
+bool offline_3::edge::operator > (const offline_3::edge &other) const
+{
+    return weight > other.weight;
+}
