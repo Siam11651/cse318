@@ -3,6 +3,7 @@
 #include <vector>
 #include <set>
 #include <cstdint>
+#include <cstddef>
 
 namespace offline_3
 {

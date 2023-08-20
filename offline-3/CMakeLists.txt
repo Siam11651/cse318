@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
+set(CXX_STANDARD 11)
+
 add_executable(offline-3
     "src/main.cpp"
     "src/graph.cpp"
