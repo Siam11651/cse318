@@ -6,7 +6,7 @@ upper_bounds_json_file = open("upper-bounds.json")
 upper_bounds_json_string = "".join(upper_bounds_json_file.readlines())
 upper_bounds_json_object = json.loads(upper_bounds_json_string)
 
-def gen_table(algorithm):
+def gen_table(algorithm: str):
     geometry_options = "a4paper, tmargin=1cm, lmargin=1cm"
     document = Document(geometry_options=geometry_options)
     table = Tabular("| c | c | c | c | c |")
