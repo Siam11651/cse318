@@ -1,8 +1,13 @@
 #include "token_mapper.hpp"
 
-offline4::token_mapper::token_mapper()
+offline4::token_mapper::token_mapper(const std::vector<std::string> &initial_tokens)
 {
     next_index = 0;
+
+    for(std::vector<std::string>::const_iterator iterator = initial_tokens.begin(); iterator != initial_tokens.end(); ++iterator)
+    {
+        get_index(*iterator);
+    }
 }
 
 uint64_t offline4::token_mapper::get_index(const std::string &token)

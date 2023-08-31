@@ -16,7 +16,7 @@ namespace offline4
         std::vector<std::string> index_to_token_map;
 
     public:
-        token_mapper();
+        token_mapper(const std::vector<std::string> &initial_tokens = {});
         uint64_t get_index(const std::string &token);
         std::string get_token(const uint64_t &index);
         uint64_t peek_next_index() const;

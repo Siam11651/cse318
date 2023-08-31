@@ -1,9 +1,11 @@
+#include <iostream>
 #include <fstream>
 #include <array>
 #include <vector>
 #include "token_mapper.hpp"
 #include "sample.hpp"
 #include "learner.hpp"
+#include "classifier.hpp"
 
 std::vector<std::string> string_spilt(const std::string &string, const std::string &delimiter)
 {
@@ -27,17 +29,17 @@ std::vector<std::string> string_spilt(const std::string &string, const std::stri
 int main(int argc, char **argv)
 {
     std::ifstream learn_data_file(argv[1]);
-    offline4::token_mapper class_mapper;
-    offline4::token_mapper attribute_mapper;
-    std::vector<offline4::token_mapper> attribute_value_mapper(6, offline4::token_mapper());
+    offline4::token_mapper class_mapper({"unacc", "acc", "good", "vgood"});
+    std::vector<offline4::token_mapper> attribute_value_mapper
+    {
+        offline4::token_mapper({"vhigh", "high", "med", "low"}),
+        offline4::token_mapper({"vhigh", "high", "med", "low"}),
+        offline4::token_mapper({"2", "3", "4", "5more"}),
+        offline4::token_mapper({"2", "4", "more"}),
+        offline4::token_mapper({"small", "med", "big"}),
+        offline4::token_mapper({"low", "med", "high"}),
+    };
     std::vector<offline4::sample> samples;
-
-    attribute_mapper.get_index("buying");
-    attribute_mapper.get_index("maint");
-    attribute_mapper.get_index("doors");
-    attribute_mapper.get_index("persons");
-    attribute_mapper.get_index("lug_boot");
-    attribute_mapper.get_index("safety");
 
     while(learn_data_file.peek() != EOF)
     {
@@ -57,9 +59,32 @@ int main(int argc, char **argv)
         samples.push_back(offline4::sample(attribute_indices, class_index));
     }
 
-    offline4::learner learner(samples, attribute_value_mapper, class_mapper);
+    learn_data_file.close();
 
-    learner.learn();
+    offline4::learner learner(&samples, &attribute_value_mapper, &class_mapper);
+    offline4::decision_tree_node *root = learner.learn();
+    std::ifstream test_data_file(argv[2]);
+
+    while(test_data_file.peek() != EOF)
+    {
+        std::string line;
+
+        std::getline(test_data_file, line);
+
+        std::vector<std::string> tokens = string_spilt(line, ",");
+        std::vector<uint64_t> attribute_indices(6);
+        uint64_t class_index = class_mapper.get_index(tokens[6]);
+
+        for(size_t i = 0; i < attribute_indices.size(); ++i)
+        {
+            attribute_indices[i] = attribute_value_mapper[i].get_index(tokens[i]);
+        }
+
+        offline4::sample sample(attribute_indices, class_index);
+        offline4::classifier classifier(&sample, &attribute_value_mapper, &class_mapper, root);
+
+        std::cout << classifier.classify() << std::endl;
+    }
 
     return 0;
 }
