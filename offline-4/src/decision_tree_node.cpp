@@ -5,9 +5,9 @@ offline4::decision_tree_node::decision_tree_node(const uint64_t &attribute_index
     this->attribute_index = attribute_index;
 }
 
-void offline4::decision_tree_node::add_child(const uint64_t &value, offline4::decision_tree_node *child_node)
+void offline4::decision_tree_node::add_child(const uint64_t &value, offline4::decision_tree_node_ptr &child_node)
 {
-    children[value] = child_node;
+    children[value] = std::move(child_node);
 }
 
 uint64_t offline4::decision_tree_node::get_attribute_index() const
@@ -15,7 +15,7 @@ uint64_t offline4::decision_tree_node::get_attribute_index() const
     return attribute_index;
 }
 
-offline4::decision_tree_node *offline4::decision_tree_node::get_child(const uint64_t &value) const
+const offline4::decision_tree_node_ptr &offline4::decision_tree_node::get_child(const uint64_t &value) const
 {
     return children.at(value);
 }

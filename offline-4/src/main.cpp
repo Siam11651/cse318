@@ -62,8 +62,10 @@ int main(int argc, char **argv)
     learn_data_file.close();
 
     offline4::learner learner(&samples, &attribute_value_mapper, &class_mapper);
-    offline4::decision_tree_node *root = learner.learn();
+    offline4::decision_tree_node_ptr tree_root = learner.learn();
     std::ifstream test_data_file(argv[2]);
+    uint64_t count = 0;
+    uint64_t matched = 0;
 
     while(test_data_file.peek() != EOF)
     {
@@ -81,10 +83,18 @@ int main(int argc, char **argv)
         }
 
         offline4::sample sample(attribute_indices, class_index);
-        offline4::classifier classifier(&sample, &attribute_value_mapper, &class_mapper, root);
+        offline4::classifier classifier(&sample, &attribute_value_mapper, &class_mapper, tree_root.get());
+        uint64_t classification = classifier.classify();
 
-        std::cout << classifier.classify() << std::endl;
+        if(sample.get_classification() == classification)
+        {
+            ++matched;
+        }
+
+        ++count;
     }
+
+    std::cout << (matched * 100.0) / count << std::endl;
 
     return 0;
 }

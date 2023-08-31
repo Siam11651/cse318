@@ -16,7 +16,7 @@ uint64_t offline4::classifier::classify() const
     {
         if(current_node->get_child_count())
         {
-            current_node = current_node->get_child(sample->get_attribute_value(current_node->get_attribute_index()));
+            current_node = current_node->get_child(sample->get_attribute_value(current_node->get_attribute_index())).get();
         }
         else
         {
