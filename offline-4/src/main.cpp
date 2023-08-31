@@ -40,7 +40,7 @@ int main(int argc, char **argv)
         offline4::token_mapper({"2", "3", "4", "5more"}),
         offline4::token_mapper({"2", "4", "more"}),
         offline4::token_mapper({"small", "med", "big"}),
-        offline4::token_mapper({"low", "med", "high"}),
+        offline4::token_mapper({"low", "med", "high"})
     };
     std::vector<offline4::sample> dataset_samples;
 
