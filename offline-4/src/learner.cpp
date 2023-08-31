@@ -128,10 +128,10 @@ offline4::decision_tree_node_ptr offline4::learner::learn_helper(const std::vect
     return tree;
 }
 
-offline4::learner::learner(const std::vector<offline4::sample> *samples, const std::vector<offline4::token_mapper> *attribute_mapper, const offline4::token_mapper *class_mapper)
+offline4::learner::learner(const std::vector<offline4::sample> *samples, const std::vector<offline4::token_mapper> *attribute_value_mapper, const offline4::token_mapper *class_mapper)
 {
     this->samples = samples;
-    this->attribute_value_mappers = attribute_mapper;
+    this->attribute_value_mappers = attribute_value_mapper;
     this->class_mapper = class_mapper;
     attribute_count = samples->front().get_attribute_count();
 }

@@ -2,6 +2,8 @@
 #include <fstream>
 #include <array>
 #include <vector>
+#include <random>
+#include <algorithm>
 #include "token_mapper.hpp"
 #include "sample.hpp"
 #include "learner.hpp"
@@ -28,9 +30,10 @@ std::vector<std::string> string_spilt(const std::string &string, const std::stri
 
 int main(int argc, char **argv)
 {
+    std::random_device random_device_engine;
     std::ifstream learn_data_file(argv[1]);
     offline4::token_mapper class_mapper({"unacc", "acc", "good", "vgood"});
-    std::vector<offline4::token_mapper> attribute_value_mapper
+    std::vector<offline4::token_mapper> attribute_value_mappers
     {
         offline4::token_mapper({"vhigh", "high", "med", "low"}),
         offline4::token_mapper({"vhigh", "high", "med", "low"}),
@@ -39,7 +42,7 @@ int main(int argc, char **argv)
         offline4::token_mapper({"small", "med", "big"}),
         offline4::token_mapper({"low", "med", "high"}),
     };
-    std::vector<offline4::sample> samples;
+    std::vector<offline4::sample> dataset_samples;
 
     while(learn_data_file.peek() != EOF)
     {
@@ -53,48 +56,49 @@ int main(int argc, char **argv)
 
         for(size_t i = 0; i < attribute_indices.size(); ++i)
         {
-            attribute_indices[i] = attribute_value_mapper[i].get_index(tokens[i]);
+            attribute_indices[i] = attribute_value_mappers[i].get_index(tokens[i]);
         }
 
-        samples.push_back(offline4::sample(attribute_indices, class_index));
+        dataset_samples.push_back(offline4::sample(attribute_indices, class_index));
     }
 
-    learn_data_file.close();
-
-    offline4::learner learner(&samples, &attribute_value_mapper, &class_mapper);
-    offline4::decision_tree_node_ptr tree_root = learner.learn();
-    std::ifstream test_data_file(argv[2]);
-    uint64_t count = 0;
-    uint64_t matched = 0;
-
-    while(test_data_file.peek() != EOF)
+    for(size_t i = 0; i < 10000; ++i)
     {
-        std::string line;
+        std::vector<offline4::sample> shuffled_dataset_samples(dataset_samples);
+        std::vector<offline4::sample> learn_dataset;
+        std::vector<offline4::sample> test_dataset;
+        
+        std::shuffle(shuffled_dataset_samples.begin(), shuffled_dataset_samples.end(), random_device_engine);
 
-        std::getline(test_data_file, line);
+        uint64_t learn_sample_count = 0.8 * shuffled_dataset_samples.size();
 
-        std::vector<std::string> tokens = string_spilt(line, ",");
-        std::vector<uint64_t> attribute_indices(6);
-        uint64_t class_index = class_mapper.get_index(tokens[6]);
-
-        for(size_t i = 0; i < attribute_indices.size(); ++i)
+        for(size_t i = 0; i < learn_sample_count; ++i)
         {
-            attribute_indices[i] = attribute_value_mapper[i].get_index(tokens[i]);
+            learn_dataset.push_back(shuffled_dataset_samples[i]);
         }
 
-        offline4::sample sample(attribute_indices, class_index);
-        offline4::classifier classifier(&sample, &attribute_value_mapper, &class_mapper, tree_root.get());
-        uint64_t classification = classifier.classify();
-
-        if(sample.get_classification() == classification)
+        for(size_t i = learn_sample_count; i < shuffled_dataset_samples.size(); ++i)
         {
-            ++matched;
+            test_dataset.push_back(shuffled_dataset_samples[i]);
         }
 
-        ++count;
+        offline4::learner learner(&learn_dataset, &attribute_value_mappers, &class_mapper);
+        offline4::decision_tree_node_ptr tree_root = learner.learn();
+        uint64_t matched_count = 0;
+        
+        for(size_t i = 0; i < test_dataset.size(); ++i)
+        {
+            offline4::classifier classifier(&test_dataset[i], &attribute_value_mappers, &class_mapper, tree_root.get());
+            uint64_t classification = classifier.classify();
+
+            if(classification == test_dataset[i].get_classification())
+            {
+                ++matched_count;
+            }
+        }
+
+        std::cout << (matched_count * 100.0) / test_dataset.size() << std::endl;
     }
-
-    std::cout << (matched * 100.0) / count << std::endl;
 
     return 0;
 }
