@@ -30,6 +30,7 @@ std::vector<std::string> string_spilt(const std::string &string, const std::stri
 
 int main(int argc, char **argv)
 {
+    uint64_t iterations = 10000;
     std::random_device random_device_engine;
     std::ifstream learn_data_file(argv[1]);
     offline4::token_mapper class_mapper({"unacc", "acc", "good", "vgood"});
@@ -62,7 +63,12 @@ int main(int argc, char **argv)
         dataset_samples.push_back(offline4::sample(attribute_indices, class_index));
     }
 
-    for(size_t i = 0; i < 10000; ++i)
+    learn_data_file.close();
+
+    std::vector<double_t> accuracies(iterations);
+    double_t accuracy_sum = 0.0;
+
+    for(size_t i = 0; i < iterations; ++i)
     {
         std::vector<offline4::sample> shuffled_dataset_samples(dataset_samples);
         std::vector<offline4::sample> learn_dataset;
@@ -97,8 +103,13 @@ int main(int argc, char **argv)
             }
         }
 
-        std::cout << (matched_count * 100.0) / test_dataset.size() << std::endl;
+        accuracies[i] = (matched_count * 100.0) / test_dataset.size();
+        accuracy_sum += accuracies[i];
     }
+
+    double_t mean = accuracy_sum / iterations;
+
+    std::cout << mean << std::endl;
 
     return 0;
 }
