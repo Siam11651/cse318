@@ -8,6 +8,7 @@
 #include "sample.hpp"
 #include "learner.hpp"
 #include "classifier.hpp"
+#include "argument_parser.hpp"
 
 std::vector<std::string> string_spilt(const std::string &string, const std::string &delimiter)
 {
@@ -30,9 +31,29 @@ std::vector<std::string> string_spilt(const std::string &string, const std::stri
 
 int main(int argc, char **argv)
 {
-    uint64_t iterations = 10000;
+    if(!offline4::argument_parser::parse(argc, argv))
+    {
+        return -1;
+    }
+
+    if(offline4::argument_parser::show_help_set())
+    {
+        offline4::argument_parser::print_help();
+
+        return 0;
+    }
+
+    if(offline4::argument_parser::get_dataset_path().empty())
+    {
+        std::cerr << "Error: No dataset file" << std::endl;
+
+        return -1;
+    }
+
+    uint64_t iteration_count = offline4::argument_parser::get_iteraion_count();
+
     std::random_device random_device_engine;
-    std::ifstream learn_data_file(argv[1]);
+    std::ifstream learn_data_file(offline4::argument_parser::get_dataset_path());
     offline4::token_mapper class_mapper({"unacc", "acc", "good", "vgood"});
     std::vector<offline4::token_mapper> attribute_value_mappers
     {
@@ -65,10 +86,10 @@ int main(int argc, char **argv)
 
     learn_data_file.close();
 
-    std::vector<double_t> accuracies(iterations);
+    std::vector<double_t> accuracies(iteration_count);
     double_t accuracy_sum = 0.0;
 
-    for(size_t i = 0; i < iterations; ++i)
+    for(size_t i = 0; i < iteration_count; ++i)
     {
         std::vector<offline4::sample> shuffled_dataset_samples(dataset_samples);
         std::vector<offline4::sample> learn_dataset;
@@ -107,9 +128,18 @@ int main(int argc, char **argv)
         accuracy_sum += accuracies[i];
     }
 
-    double_t mean = accuracy_sum / iterations;
+    double_t mean = accuracy_sum / iteration_count;
+    double_t sum = 0.0;
 
-    std::cout << mean << std::endl;
+    for(std::vector<double_t>::const_iterator iterator = accuracies.begin(); iterator != accuracies.end(); ++iterator)
+    {
+        sum += std::pow(mean - *iterator, 2.0);
+    }
+
+    double_t standard_deviation = std::sqrt(sum / iteration_count);
+
+    std::cout << "Mean: " << mean << std::endl;
+    std::cout << "Standard Deviation: " << standard_deviation << std::endl;
 
     return 0;
 }
