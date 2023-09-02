@@ -19,7 +19,7 @@ offline4::decision_tree_node_ptr offline4::learner::get_plurality_value(const st
         }
     }
 
-    return std::make_unique<offline4::decision_tree_node, const uint64_t &>(max_class);
+    return std::unique_ptr<offline4::decision_tree_node>(new offline4::decision_tree_node(max_class));
 }
 
 double_t offline4::learner::get_reminder(uint64_t attribute_index, const std::vector<offline4::sample> &samples) const
@@ -80,7 +80,7 @@ offline4::decision_tree_node_ptr offline4::learner::learn_helper(const std::vect
 
     if(all_same)
     {
-        return std::make_unique<offline4::decision_tree_node, const uint64_t &>(classification);
+        return std::unique_ptr<offline4::decision_tree_node>(new offline4::decision_tree_node(classification));
     }
 
     if(attribute_indices.empty())
@@ -102,7 +102,7 @@ offline4::decision_tree_node_ptr offline4::learner::learn_helper(const std::vect
         }
     }
 
-    offline4::decision_tree_node_ptr tree = std::make_unique<offline4::decision_tree_node, const uint64_t &>(best_attribute);
+    offline4::decision_tree_node_ptr tree = std::unique_ptr<offline4::decision_tree_node>(new offline4::decision_tree_node(best_attribute));
 
     for(size_t i = 0; i < (*attribute_value_mappers)[best_attribute].peek_next_index(); ++i) // next index is the current number of indices
     {
