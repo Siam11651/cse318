@@ -10,23 +10,26 @@
 #include "classifier.hpp"
 #include "argument_parser.hpp"
 
-std::vector<std::string> string_spilt(const std::string &string, const std::string &delimiter)
+namespace offline4
 {
-    std::string temp_string = string;
-    size_t pos = 0;
-    std::vector<std::string> to_return;
-
-    while((pos = temp_string.find(delimiter)) != std::string::npos)
+    std::vector<std::string> string_spilt(const std::string &string, const std::string &delimiter)
     {
-        std::string token = temp_string.substr(0, pos);
+        std::string temp_string = string;
+        size_t pos = 0;
+        std::vector<std::string> to_return;
 
-        to_return.push_back(token);
-        temp_string.erase(0, pos + delimiter.length());
+        while((pos = temp_string.find(delimiter)) != std::string::npos)
+        {
+            std::string token = temp_string.substr(0, pos);
+
+            to_return.push_back(token);
+            temp_string.erase(0, pos + delimiter.length());
+        }
+
+        to_return.push_back(temp_string);
+
+        return to_return;
     }
-
-    to_return.push_back(temp_string);
-
-    return to_return;
 }
 
 int main(int argc, char **argv)
@@ -72,7 +75,7 @@ int main(int argc, char **argv)
 
         std::getline(learn_data_file, line);
 
-        std::vector<std::string> tokens = string_spilt(line, ",");
+        std::vector<std::string> tokens = offline4::string_spilt(line, ",");
         std::vector<uint64_t> attribute_indices(6);
         uint64_t class_index = class_mapper.get_index(tokens[6]);
 
