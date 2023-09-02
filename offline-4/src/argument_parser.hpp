@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ARGUMENT_PARSER_H
+#define ARGUMENT_PARSER_H
 
 #include <cstdint>
 #include <utility>
@@ -31,3 +32,5 @@ namespace offline4
         static std::string get_dataset_path();
     };
 }
+
+#endif
