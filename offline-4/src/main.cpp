@@ -54,7 +54,6 @@ int main(int argc, char **argv)
     }
 
     uint64_t iteration_count = offline4::argument_parser::get_iteraion_count();
-
     std::random_device random_device_engine;
     std::ifstream learn_data_file(offline4::argument_parser::get_dataset_path());
     offline4::token_mapper class_mapper({"unacc", "acc", "good", "vgood"});
