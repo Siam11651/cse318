@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(CXX_STANDARD 11)
-
 add_executable(offline-3
     "src/main.cpp"
     "src/graph.cpp"
@@ -9,3 +7,5 @@ add_executable(offline-3
     "src/maxcut_solver.cpp"
     "src/argument_parser.cpp"
 )
+
+set_property(TARGET offline-4 PROPERTY CXX_STANDARD 11)
